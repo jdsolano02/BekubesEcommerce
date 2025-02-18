@@ -11,6 +11,9 @@ import EditUser from "./EditUser";
 import RegisterAdmin from "./RegisterAdmin";
 import ResetPassword from "./ResetPassword";
 import ChangePassword from "./ChangePassword";
+import GestionProductos from "./GestionProductos";
+import CatalogoProductos from "./CatalogoProductos";
+
 
 function App() {
   return (
@@ -19,13 +22,11 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register-form" element={<RegisterForm />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/usuarios" element={<Usuarios />} />
         <Route path="/edit-user/:id" element={<EditUser />} />
-        <Route path="/register-admin" element={<RegisterAdmin />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/change-password" element={<ChangePassword />} />
 
-        {/* Rutas protegidas */}
+        {/* Rutas protegidas Cliente */}
         <Route
           path="/client-home"
           element={
@@ -34,6 +35,15 @@ function App() {
             </PrivateRoute>
           }
         />
+                                     <Route
+          path="/catalogo-productos"
+          element={
+            <PrivateRoute role="Cliente">
+              <CatalogoProductos />
+            </PrivateRoute>
+          }
+        />
+        {/* Rutas protegidas Administrador */}
         <Route
           path="/admin-home"
           element={
@@ -42,6 +52,31 @@ function App() {
             </PrivateRoute>
           }
         />
+                <Route
+          path="/usuarios"
+          element={
+            <PrivateRoute role="Administrador">
+              <Usuarios />
+            </PrivateRoute>
+          }
+        />
+             <Route
+          path="/register-admin"
+          element={
+            <PrivateRoute role="Administrador">
+              <RegisterAdmin />
+            </PrivateRoute>
+          }
+        />
+                     <Route
+          path="/gestion-productos"
+          element={
+            <PrivateRoute role="Administrador">
+              <GestionProductos />
+            </PrivateRoute>
+          }
+        />
+
 
         {/* Página para usuarios no autorizados */}
         <Route path="/unauthorized" element={<Unauthorized />} />

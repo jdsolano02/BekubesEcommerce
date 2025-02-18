@@ -1,0 +1,52 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+.hero-section {
+    background-image: url("https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjVrYnJycWxwNDVvaXA3bDhwMDdrZHk5eWVnNThkNTd0OXNkdndpYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7bueNLxh9rqn86YM/giphy.gif");
+    background-size: cover; /* Cubre todo el espacio disponible */
+    background-position: center; /* Centra la imagen */
+    background-repeat: no-repeat; /* Evita que la imagen se repita */
+    color: white;
+    padding: 100px 0;
+    text-align: center;
+}
+.hero-section h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #000000;
+    padding-top: 20px;
+
+}
+.hero-section p {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    color: #000000;
+}
+.features-section {
+    padding: 60px 0;
+    background-color: white;
+}
+.feature-card {
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+.feature-card h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #000000;
+}
+.feature-card p {
+    font-size: 1rem;
+    color: #666;
+}

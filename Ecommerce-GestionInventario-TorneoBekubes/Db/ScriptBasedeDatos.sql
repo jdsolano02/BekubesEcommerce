@@ -42,8 +42,7 @@ CREATE TABLE Productos (
     ID_Producto INT PRIMARY KEY AUTO_INCREMENT,
     Nombre VARCHAR(100),
     Descripcion TEXT,
-    Precio DOUBLE,
-    Stock INT
+    Precio DOUBLE
 );
 CREATE TABLE Carrito (
     ID_Carrito INT PRIMARY KEY AUTO_INCREMENT,
@@ -82,27 +81,32 @@ CREATE TABLE Metodo_Pago (
 );
 CREATE TABLE Inventario (
     ID_Inventario INT PRIMARY KEY AUTO_INCREMENT,
-    Productos TEXT,
-    Stock INT,
+    ID_Producto INT,
+    Cantidad_Disponible INT,
+    Cantidad_Minima INT,
     FechaCreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FechaModificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    FechaModificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	FOREIGN KEY (ID_Producto) REFERENCES Productos(ID_Producto)
 );
 
 ALTER TABLE Usuarios
-ADD Verificado BOOLEAN DEFAULT 0, -- 0 = No verificado, 1 = Verificado
-ADD TokenVerificacion VARCHAR(255), -- Token único para confirmar el correo
-ADD FechaLimiteVerificacion TIMESTAMP; -- Fecha límite para validar el correo
+ADD Verificado BOOLEAN DEFAULT 0, 
+ADD TokenVerificacion VARCHAR(255), 
+ADD FechaLimiteVerificacion TIMESTAMP; 
 
 ALTER TABLE Usuarios
 ADD COLUMN reset_token VARCHAR(255) NULL,
 ADD COLUMN token_expiration DATETIME NULL,
 ADD Estado BOOLEAN DEFAULT 0;
 
-
-CREATE TABLE Historial_Intentos (
-    ID INT AUTO_INCREMENT PRIMARY KEY,
-    Email VARCHAR(255) NOT NULL,
-    Intentos INT DEFAULT 0,
-    UltimoIntento TIMESTAMP,
-    CuentaBloqueada BOOLEAN DEFAULT FALSE
-);
+-- Primero eliminar la tabla inventario--
+DROP TABLE Inventario;
+--Luego agregar todos estas columnas de más en productos--
+ALTER TABLE Productos
+ADD COLUMN Tipo VARCHAR(255),
+ADD COLUMN Dificultad VARCHAR(255),
+ADD COLUMN Imagen LONGBLOB,
+ADD COLUMN Estado BOOLEAN DEFAULT 0;
+-- Y por ultimo eleimnar la columna Stock en productos--
+ALTER TABLE Productos DROP COLUMN Stock;
+-- Y luego volver a crear la tabla Inventario que esta arriba ya modificada--

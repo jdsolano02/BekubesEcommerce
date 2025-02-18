@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
@@ -12,7 +13,19 @@ const RegisterForm = () => {
   });
   const [message, setMessage] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const navigate = useNavigate();
+  const adminEmail = localStorage.getItem("email");
 
+    // hacer el logout
+    const handleLogout = async () => {
+      await fetch(
+        "http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/logout.php"
+      );
+      localStorage.removeItem("role");
+      localStorage.removeItem("email");
+      navigate("/login");
+    };
+    
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -21,7 +34,7 @@ const RegisterForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Datos enviados:", formData); // Verifica los datos antes de enviar
+    console.log("Datos enviados:", formData); 
 
     try {
       const response = await fetch("http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/RegistroAdmin.php", {
@@ -54,6 +67,70 @@ const RegisterForm = () => {
   };
 
   return (
+    <>
+    <div>
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+          <div className="container-fluid">
+            <a className="navbar-brand" href="/admin-home">
+              Panel Administrador
+            </a>
+            <button
+              className="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarNav"
+              aria-controls="navbarNav"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span className="navbar-toggler-icon"></span>
+            </button>
+            <div className="collapse navbar-collapse" id="navbarNav">
+              <ul className="navbar-nav me-auto">
+                <li className="nav-item">
+                  <button
+                    className="nav-link btn btn-link"
+                    onClick={() => navigate("/usuarios")}
+                  >
+                    Usuarios
+                  </button>
+                </li>
+                <li className="nav-item">
+                  <button
+                    className="nav-link btn btn-link"
+                    onClick={() => navigate("/register-admin")}
+                  >
+                    Crear Usuarios
+                  </button>
+                </li>
+                <li className="nav-item">
+                  <button
+                    className="nav-link btn btn-link"
+                    onClick={() => navigate("/inventario")}
+                  >
+                    Inventario
+                  </button>
+                </li>
+                <li className="nav-item">
+                  <button
+                    className="nav-link btn btn-link"
+                    onClick={() => navigate("/gestion-productos")}
+                  >
+                    Gestionar Productos
+                  </button>
+                </li>
+              </ul>
+              <span className="navbar-text text-white me-3">
+                Bienvenido, {adminEmail}
+              </span>
+              <button className="btn btn-danger" onClick={handleLogout}>
+                Cerrar sesión
+              </button>
+            </div>
+          </div>
+        </nav>
+      </div>
+
     <div className="container d-flex justify-content-center align-items-center min-vh-100">
       <div className="card shadow-lg p-4" style={{ width: "400px", borderRadius: "20px" }}>
         <h2 className="text-center mb-4" style={{ color: "#F39C12" }}>Registro de Usuario</h2>
@@ -172,6 +249,7 @@ const RegisterForm = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
