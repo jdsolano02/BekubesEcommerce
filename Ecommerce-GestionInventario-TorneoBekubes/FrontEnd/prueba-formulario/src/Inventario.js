@@ -1,11 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./styleAdmin.css"; // Importa el archivo CSS
-
-
-const AdminHome = () => {
-  const navigate = useNavigate();
+import "./styleAdmin.css"; 
+const Inventario = () => { 
+ const navigate = useNavigate();
   const adminEmail = localStorage.getItem("email");
 
   const handleLogout = async () => {
@@ -15,8 +13,8 @@ const AdminHome = () => {
     localStorage.removeItem("email");
     navigate("/login");
   };
-
   return (
+    <>
     <div>
       {/* Navbar */}
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -48,57 +46,11 @@ const AdminHome = () => {
           </div>
         </div>
       </nav>
+      </div>
 
-      {/* Hero Section */}
-      <section className="hero-section">
-        <div className="container">
-        <h1>Gestiona. Vende. Resuelve.</h1>
-        <p>La plataforma definitiva para administrar tu ecommerce de cubos Rubik.</p>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="features-section">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-4 mb-4">
-              <div className="feature-card">
-              <h2>Gestión de Inventario</h2>
-              <p>Controla tu stock de cubos Rubik de manera eficiente.</p>
-              <img
-                src="https://img.icons8.com/?size=100&id=V82gwIqAn8NY&format=png&color=000000" 
-                alt="gestión"
-                className="img-fluid"
-              />
-              </div>
-            </div>
-            <div className="col-md-4 mb-4">
-              <div className="feature-card">
-              <h2>Ventas en Tiempo Real</h2>
-              <p>Monitorea y gestiona tus ventas en tiempo real.</p>
-              <img
-                src="https://img.icons8.com/?size=100&id=MnYyIWSrPXYw&format=png&color=000000" 
-                alt="gestión"
-                className="img-fluid"
-              />
-              </div>
-            </div>
-            <div className="col-md-4 mb-4">
-              <div className="feature-card">
-              <h2>Colaboración en Equipo</h2>
-              <p>Trabaja con tu equipo de manera colaborativa y eficiente.</p>
-              <img
-                src="https://img.icons8.com/?size=100&id=lC0bpzpRcdWI&format=png&color=000000" 
-                alt="gestión"
-                className="img-fluid"
-              />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  );
+      
+      </>
+    );
 };
 
-export default AdminHome;
+export default Inventario;

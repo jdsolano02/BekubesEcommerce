@@ -58,7 +58,7 @@ const CatalogoProductos = () => {
 
   // Agregar producto al carrito
   const agregarAlCarrito = async (producto) => {
-    const idUsuario = localStorage.getItem("user_id"); 
+    const idUsuario = localStorage.getItem("user_id");
   
     if (!idUsuario) {
       Swal.fire({
@@ -69,60 +69,30 @@ const CatalogoProductos = () => {
       return;
     }
   
-    const productoEnCarrito = carrito.find((item) => item.ID_Producto === producto.ID_Producto);
+    // Recuperamos el carrito actual del localStorage
+    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
   
-    try {
-      console.log(idUsuario);
-      // Enviar la solicitud al backend para agregar el producto al carrito
-      const response = await fetch("http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/agregarAlCarrito.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify ({
-        
-          idUsuario: idUsuario,
-          items: [{ 
-            idProducto: producto.ID_Producto, 
-            cantidad: 1, 
-            precio: producto.Precio 
-          }],
-        }),
-      });
+    // Comprobamos si el producto ya está en el carrito
+    const productoExistente = carrito.find((item) => item.ID_Producto === producto.ID_Producto);
   
-      const data = await response.json();
-  
-      if (data.status === "success") {
-        // Actualizar el estado del carrito en el frontend
-        if (productoEnCarrito) {
-          setCarrito(
-            carrito.map((item) =>
-              item.ID_Producto === producto.ID_Producto ? { ...item, cantidad: item.cantidad + 1 } : item
-            )
-          );
-        } else {
-          setCarrito([...carrito, { ...producto, cantidad: 1 }]);
-        }
-  
-        // Actualizar el contador del carrito
-        setCantidadCarrito((prevCantidad) => prevCantidad + 1);
-  
-        Swal.fire({
-          icon: "success",
-          title: "Producto agregado",
-          text: `${producto.Nombre} se ha añadido al carrito.`,
-        });
-      } else {
-        throw new Error(data.message);
-      }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: error.message,
-      });
+    if (productoExistente) {
+      // Si ya está, incrementamos la cantidad
+      productoExistente.Cantidad++;
+    } else {
+      // Si no está, lo agregamos al carrito
+      carrito.push({ ...producto, Cantidad: 1 });
     }
+  
+    // Guardamos el carrito actualizado en localStorage
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+  
+    Swal.fire({
+      icon: "success",
+      title: "Producto agregado",
+      text: "El producto se ha añadido a tu carrito.",
+    });
   };
+  
 
   // Función para cerrar sesión
   const handleLogout = async () => {

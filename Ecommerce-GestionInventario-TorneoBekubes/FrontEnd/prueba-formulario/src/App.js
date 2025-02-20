@@ -13,7 +13,10 @@ import ResetPassword from "./ResetPassword";
 import ChangePassword from "./ChangePassword";
 import GestionProductos from "./GestionProductos";
 import CatalogoProductos from "./CatalogoProductos";
-import Carrito from "./Carrito"
+import Carrito from "./Carrito";
+import Pedidos from "./Pedidos";
+import PedidosAdmin from "./PedidosAdmin"
+import Inventario from "./Inventario"
 
 function App() {
   return (
@@ -51,6 +54,15 @@ function App() {
             </PrivateRoute>
           }
         />
+                                                     <Route
+          path="/pedido"
+          element={
+            <PrivateRoute role="Cliente">
+              <Pedidos />
+            </PrivateRoute>
+          }
+        />
+
         {/* Rutas protegidas Administrador */}
         <Route
           path="/admin-home"
@@ -84,7 +96,22 @@ function App() {
             </PrivateRoute>
           }
         />
-
+                    <Route
+          path="/pedidos-admin"
+          element={
+            <PrivateRoute role="Administrador">
+              <PedidosAdmin />
+            </PrivateRoute>
+          }
+        />
+                            <Route
+          path="/inventario"
+          element={
+            <PrivateRoute role="Administrador">
+              <Inventario />
+            </PrivateRoute>
+          }
+        />
 
         {/* Página para usuarios no autorizados */}
         <Route path="/unauthorized" element={<Unauthorized />} />

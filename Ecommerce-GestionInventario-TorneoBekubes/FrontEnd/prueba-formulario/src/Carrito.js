@@ -9,38 +9,11 @@ const Carrito = () => {
   const [total, setTotal] = useState(0);
   const navigate = useNavigate();
 
-  // Obtener el carrito desde la base de datos
-  const obtenerCarrito = async () => {
-    const idUsuario = localStorage.getItem("user_id"); // Obtén el ID del usuario desde el localStorage
-  
-    if (!idUsuario) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "No se encontró el ID del usuario.",
-      });
-      return;
-    }
-  
-    try {
-      const response = await fetch(
-        `http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/obtenerCarrito.php?idUsuario=${idUsuario}`
-      );
-      const data = await response.json();
-  
-      if (data.status === "success") {
-        setCarrito(data.items); // Actualiza el estado del carrito con los items obtenidos
-        calcularTotal(data.items); // Calcula el total
-      } else {
-        throw new Error(data.message);
-      }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: error.message,
-      });
-    }
+  // Cargar el carrito desde localStorage
+  const obtenerCarrito = () => {
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    setCarrito(carrito);
+    calcularTotal(carrito);
   };
 
   // Calcular el total del carrito
@@ -53,7 +26,7 @@ const Carrito = () => {
   };
 
   // Ajustar la cantidad de un producto en el carrito
-  const ajustarCantidad = async (idProducto, nuevaCantidad) => {
+  const ajustarCantidad = (idProducto, nuevaCantidad) => {
     if (nuevaCantidad < 1) {
       Swal.fire({
         icon: "warning",
@@ -63,26 +36,73 @@ const Carrito = () => {
       return;
     }
 
+    // Actualizar carrito en localStorage
+    const carritoActualizado = carrito.map((item) =>
+      item.ID_Producto === idProducto ? { ...item, Cantidad: nuevaCantidad } : item
+    );
+    setCarrito(carritoActualizado);
+    localStorage.setItem("carrito", JSON.stringify(carritoActualizado));
+    calcularTotal(carritoActualizado); // Recalcular el total
+  };
+
+  // Eliminar un producto del carrito
+  const eliminarProducto = (idProducto) => {
+    const carritoActualizado = carrito.filter((item) => item.ID_Producto !== idProducto);
+    setCarrito(carritoActualizado);
+    localStorage.setItem("carrito", JSON.stringify(carritoActualizado));
+    calcularTotal(carritoActualizado); // Recalcular el total
+  };
+  // Generar Pedidos
+  const finalizarCompra = async () => {
+    const idUsuario = localStorage.getItem("user_id"); // Obtén el ID del usuario
+  
+    if (!idUsuario) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Debes iniciar sesión para finalizar la compra.",
+      });
+      return;
+    }
+  
+    if (carrito.length === 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "Carrito vacío",
+        text: "No hay productos en el carrito.",
+      });
+      return;
+    }
+  
     try {
+      // Enviar los datos del carrito al backend
       const response = await fetch(
-        "http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/ajustarCarrito.php",
+        "http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/agregarPedido.php",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ idProducto, nuevaCantidad }),
+          body: JSON.stringify({
+            idUsuario: idUsuario,
+            items: carrito, 
+          }),
         }
       );
-
+  
       const data = await response.json();
+  
       if (data.status === "success") {
-        // Actualiza el estado del carrito en el frontend
-        const carritoActualizado = carrito.map((item) =>
-          item.ID_Producto === idProducto ? { ...item, cantidad: nuevaCantidad } : item
-        );
-        setCarrito(carritoActualizado);
-        calcularTotal(carritoActualizado); // Recalcula el total
+        Swal.fire({
+          icon: "success",
+          title: "Pedido creado",
+          text: "Tu pedido se ha creado correctamente.",
+        });
+  
+        // Limpiar el carrito después de finalizar la compra
+        setCarrito([]);
+        localStorage.removeItem("carrito");
+        setTotal(0);
       } else {
         throw new Error(data.message);
       }
@@ -142,7 +162,7 @@ const Carrito = () => {
                 <td>
                   <button
                     className="btn btn-danger btn-sm"
-                    onClick={() => ajustarCantidad(item.ID_Producto, 0)}
+                    onClick={() => eliminarProducto(item.ID_Producto)}
                   >
                     Eliminar
                   </button>
@@ -156,7 +176,7 @@ const Carrito = () => {
       {/* Resumen del carrito */}
       <div className="text-end mt-4">
         <h4>Total: ${total.toFixed(2)}</h4>
-        <button className="btn btn-success" onClick={() => navigate("/checkout")}>
+        <button className="btn btn-success" onClick={finalizarCompra}>
           Finalizar Compra
         </button>
       </div>
