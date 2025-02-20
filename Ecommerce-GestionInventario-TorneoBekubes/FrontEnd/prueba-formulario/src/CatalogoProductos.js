@@ -18,6 +18,7 @@ import { FaFacebook, FaInstagram, FaWhatsapp } from "react-icons/fa";
 const CatalogoProductos = () => {
   const [productos, setProductos] = useState([]);
   const [carrito, setCarrito] = useState([]);
+  const [cantidadCarrito, setCantidadCarrito] = useState(0); // Estado para el contador del carrito
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -56,28 +57,71 @@ const CatalogoProductos = () => {
   };
 
   // Agregar producto al carrito
-  const agregarAlCarrito = (producto) => {
-    const productoEnCarrito = carrito.find(
-      (item) => item.ID_Producto === producto.ID_Producto
-    );
-    if (productoEnCarrito) {
-      // Si el producto ya está en el carrito, aumentar la cantidad
-      setCarrito(
-        carrito.map((item) =>
-          item.ID_Producto === producto.ID_Producto
-            ? { ...item, cantidad: item.cantidad + 1 }
-            : item
-        )
-      );
-    } else {
-      // Si el producto no está en el carrito, agregarlo
-      setCarrito([...carrito, { ...producto, cantidad: 1 }]);
+  const agregarAlCarrito = async (producto) => {
+    const idUsuario = localStorage.getItem("user_id"); 
+  
+    if (!idUsuario) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Debes iniciar sesión para agregar productos al carrito.",
+      });
+      return;
     }
-    Swal.fire({
-      icon: "success",
-      title: "Producto agregado",
-      text: `${producto.Nombre} se ha añadido al carrito.`,
-    });
+  
+    const productoEnCarrito = carrito.find((item) => item.ID_Producto === producto.ID_Producto);
+  
+    try {
+      console.log(idUsuario);
+      // Enviar la solicitud al backend para agregar el producto al carrito
+      const response = await fetch("http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/agregarAlCarrito.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify ({
+        
+          idUsuario: idUsuario,
+          items: [{ 
+            idProducto: producto.ID_Producto, 
+            cantidad: 1, 
+            precio: producto.Precio 
+          }],
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (data.status === "success") {
+        // Actualizar el estado del carrito en el frontend
+        if (productoEnCarrito) {
+          setCarrito(
+            carrito.map((item) =>
+              item.ID_Producto === producto.ID_Producto ? { ...item, cantidad: item.cantidad + 1 } : item
+            )
+          );
+        } else {
+          setCarrito([...carrito, { ...producto, cantidad: 1 }]);
+        }
+  
+        // Actualizar el contador del carrito
+        setCantidadCarrito((prevCantidad) => prevCantidad + 1);
+  
+        Swal.fire({
+          icon: "success",
+          title: "Producto agregado",
+          text: `${producto.Nombre} se ha añadido al carrito.`,
+        });
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error.message,
+      });
+    }
   };
 
   // Función para cerrar sesión
@@ -141,8 +185,8 @@ const CatalogoProductos = () => {
               <Nav.Link href="/catalogo-productos" className="mx-2">
                 Catalogo de Productos
               </Nav.Link>
-              <Nav.Link href="/men" className="mx-2">
-                Carrito
+              <Nav.Link href="/carrito" className="mx-2">
+                Carrito ({cantidadCarrito}) {/* Mostrar el contador aquí */}
               </Nav.Link>
               <Nav.Link href="/about" className="mx-2">
                 Sobre Nosotros

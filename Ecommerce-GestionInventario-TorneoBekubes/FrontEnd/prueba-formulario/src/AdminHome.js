@@ -10,6 +10,7 @@ const AdminHome = () => {
 
   const handleLogout = async () => {
     await fetch("http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/logout.php");
+    localStorage.removeItem("user_id");
     localStorage.removeItem("role");
     localStorage.removeItem("email");
     navigate("/login");

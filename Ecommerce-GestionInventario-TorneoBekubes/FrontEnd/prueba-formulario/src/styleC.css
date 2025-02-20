@@ -1,0 +1,20 @@
+/* Carrito.css */
+.table-responsive {
+    margin-top: 20px;
+  }
+  
+  .table th, .table td {
+    vertical-align: middle;
+  }
+  
+  .btn-outline-secondary {
+    width: 30px;
+  }
+  
+  .btn-danger {
+    margin-left: 10px;
+  }
+  
+  .text-end {
+    margin-top: 20px;
+  }

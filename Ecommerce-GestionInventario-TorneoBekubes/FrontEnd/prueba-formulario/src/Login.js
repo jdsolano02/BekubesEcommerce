@@ -15,6 +15,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
+      
       const response = await fetch("http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/login.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -24,9 +25,9 @@ const Login = () => {
       const data = await response.json();
 
       if (data.status === "success") {
+        localStorage.setItem("user_id", data.user_id);
         localStorage.setItem("role", data.role);
         localStorage.setItem("email", email);
-
         if (data.role === "Administrador") {
           navigate("/admin-home");
         } else if (data.role === "Cliente") {

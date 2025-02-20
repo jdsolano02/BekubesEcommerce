@@ -13,7 +13,7 @@ import ResetPassword from "./ResetPassword";
 import ChangePassword from "./ChangePassword";
 import GestionProductos from "./GestionProductos";
 import CatalogoProductos from "./CatalogoProductos";
-
+import Carrito from "./Carrito"
 
 function App() {
   return (
@@ -40,6 +40,14 @@ function App() {
           element={
             <PrivateRoute role="Cliente">
               <CatalogoProductos />
+            </PrivateRoute>
+          }
+        />
+                                             <Route
+          path="/carrito"
+          element={
+            <PrivateRoute role="Cliente">
+              <Carrito />
             </PrivateRoute>
           }
         />

@@ -36,6 +36,7 @@ if ($user) {
             echo json_encode([
                 "status" => "success",
                 "message" => "Inicio de sesión exitoso.",
+                "user_id" => $user['ID_Usuario'],
                 "role" => $user['Rol'],
             ]);
         } else {
