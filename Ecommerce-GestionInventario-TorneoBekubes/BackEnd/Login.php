@@ -18,7 +18,7 @@ if (empty($email) || empty($password)) {
 }
 
 // Verificar las credenciales del usuario
-$query = "SELECT ID_Usuario, Password, Rol, verificado FROM Usuarios WHERE Email = :email";
+$query = "SELECT ID_Usuario, Password, Rol, verificado, Estado FROM Usuarios WHERE Email = :email";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':email', $email);
 $stmt->execute();
@@ -29,16 +29,22 @@ if ($user) {
     if (password_verify($password, $user['Password'])) {
         // Verificar si la cuenta está activa
         if ($user['verificado'] == 1) {
-            // Credenciales correctas y cuenta verificada, iniciar sesión
-            $_SESSION['user_id'] = $user['ID_Usuario'];
-            $_SESSION['role'] = $user['Rol'];
+            // Verificar si la cuenta está habilitada
+            if ($user['Estado'] == 0) {
+                // Credenciales correctas, cuenta verificada y habilitada, iniciar sesión
+                $_SESSION['user_id'] = $user['ID_Usuario'];
+                $_SESSION['role'] = $user['Rol'];
 
-            echo json_encode([
-                "status" => "success",
-                "message" => "Inicio de sesión exitoso.",
-                "user_id" => $user['ID_Usuario'],
-                "role" => $user['Rol'],
-            ]);
+                echo json_encode([
+                    "status" => "success",
+                    "message" => "Inicio de sesión exitoso.",
+                    "user_id" => $user['ID_Usuario'],
+                    "role" => $user['Rol'],
+                ]);
+            } else {
+                // Cuenta deshabilitada
+                echo json_encode(["status" => "error", "message" => "Su cuenta ha sido deshabilitada. Por favor, contacte con los administradores."]);
+            }
         } else {
             // Cuenta no verificada
             echo json_encode(["status" => "error", "message" => "Tu cuenta no está verificada. Por favor, verifica tu cuenta."]);

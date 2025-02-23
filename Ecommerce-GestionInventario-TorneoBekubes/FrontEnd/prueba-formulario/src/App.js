@@ -17,6 +17,7 @@ import Carrito from "./Carrito";
 import Pedidos from "./Pedidos";
 import PedidosAdmin from "./PedidosAdmin"
 import Inventario from "./Inventario"
+import SobreNosotros from "./sobreNosotros"
 
 function App() {
   return (
@@ -61,7 +62,14 @@ function App() {
               <Pedidos />
             </PrivateRoute>
           }
-        />
+        />                                                     <Route
+        path="/sobre-nosotros"
+        element={
+          <PrivateRoute role="Cliente">
+            <SobreNosotros />
+          </PrivateRoute>
+        }
+      />
 
         {/* Rutas protegidas Administrador */}
         <Route

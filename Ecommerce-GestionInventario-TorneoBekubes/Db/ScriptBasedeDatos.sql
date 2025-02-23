@@ -110,3 +110,24 @@ ADD COLUMN Estado BOOLEAN DEFAULT 0;
 -- Y por ultimo eleimnar la columna Stock en productos--
 ALTER TABLE Productos DROP COLUMN Stock;
 -- Y luego volver a crear la tabla Inventario que esta arriba ya modificada--
+
+--Ahora para los pedidos hacer estas modificaciones--
+ALTER TABLE pedidos
+DROP FOREIGN key pedidos_ibfk_1;
+ALTER TABLE pedidos
+ADD COLUMN Fecha  DATETIME DEFAULT CURRENT_TIMESTAMP;
+
+ADD COLUMN Email  VARCHAR(255);
+ALTER TABLE pedidos
+ADD COLUMN ID_Usuario VARCHAR(255);
+ALTER TABLE Pedidos DROP COLUMN ID_Carrito;
+-- luego crear esta nueva tabla ---
+CREATE TABLE PedidoDetalles (
+    ID_Detalle INT PRIMARY KEY AUTO_INCREMENT,
+    ID_Pedido INT,
+    ID_Producto INT,
+    Cantidad INT,
+    Precio DECIMAL(10,2),
+    FOREIGN KEY (ID_Pedido) REFERENCES Pedidos(ID_Pedido),
+    FOREIGN KEY (ID_Producto) REFERENCES Productos(ID_Producto)
+);

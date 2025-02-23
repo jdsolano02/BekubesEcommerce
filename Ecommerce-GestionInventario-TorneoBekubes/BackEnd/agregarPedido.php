@@ -10,6 +10,7 @@ include 'conexionBD.php';
 $data = json_decode(file_get_contents("php://input"), true);
 
 $idUsuario = $data['idUsuario']; // ID del usuario que realiza el pedido
+$email = $data['email']; // Email del usuario (debe enviarse desde el frontend)
 $items = $data['items']; // Productos en el carrito
 
 try {
@@ -17,8 +18,10 @@ try {
     $conn->beginTransaction();
 
     // Crear el pedido
-    $queryPedido = "INSERT INTO Pedidos (Estado) VALUES ('Procesando')";
+    $queryPedido = "INSERT INTO Pedidos (Estado, Email, ID_Usuario) VALUES ('Procesando', :email, :idUsuario)";
     $stmtPedido = $conn->prepare($queryPedido);
+    $stmtPedido->bindParam(':email', $email); // Vincular el email
+    $stmtPedido->bindParam(':idUsuario', $idUsuario); // Vincular el email
     $stmtPedido->execute();
     $idPedido = $conn->lastInsertId(); // Obtener el ID del pedido creado
 

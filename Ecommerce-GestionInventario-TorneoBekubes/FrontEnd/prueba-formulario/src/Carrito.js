@@ -52,10 +52,12 @@ const Carrito = () => {
     localStorage.setItem("carrito", JSON.stringify(carritoActualizado));
     calcularTotal(carritoActualizado); // Recalcular el total
   };
+
   // Generar Pedidos
   const finalizarCompra = async () => {
     const idUsuario = localStorage.getItem("user_id"); // Obtén el ID del usuario
-  
+    const email = localStorage.getItem("email");
+
     if (!idUsuario) {
       Swal.fire({
         icon: "error",
@@ -64,7 +66,7 @@ const Carrito = () => {
       });
       return;
     }
-  
+
     if (carrito.length === 0) {
       Swal.fire({
         icon: "warning",
@@ -73,7 +75,7 @@ const Carrito = () => {
       });
       return;
     }
-  
+
     try {
       // Enviar los datos del carrito al backend
       const response = await fetch(
@@ -85,20 +87,21 @@ const Carrito = () => {
           },
           body: JSON.stringify({
             idUsuario: idUsuario,
-            items: carrito, 
+            items: carrito,
+            email: email,
           }),
         }
       );
-  
+
       const data = await response.json();
-  
+
       if (data.status === "success") {
         Swal.fire({
           icon: "success",
           title: "Pedido creado",
           text: "Tu pedido se ha creado correctamente.",
         });
-  
+
         // Limpiar el carrito después de finalizar la compra
         setCarrito([]);
         localStorage.removeItem("carrito");
@@ -176,9 +179,17 @@ const Carrito = () => {
       {/* Resumen del carrito */}
       <div className="text-end mt-4">
         <h4>Total: ${total.toFixed(2)}</h4>
-        <button className="btn btn-success" onClick={finalizarCompra}>
-          Finalizar Compra
-        </button>
+        <div className="d-flex justify-content-end gap-2">
+          <button
+            className="btn btn-secondary"
+            onClick={() => navigate("/catalogo-productos")} // Botón "Volver"
+          >
+            Volver
+          </button>
+          <button className="btn btn-success" onClick={finalizarCompra}>
+            Finalizar Compra
+          </button>
+        </div>
       </div>
     </div>
   );

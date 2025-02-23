@@ -1,5 +1,4 @@
 <?php
-
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
@@ -10,24 +9,18 @@ include 'conexionBD.php';
 $data = json_decode(file_get_contents("php://input"), true);
 
 $idPedido = $data['idPedido'];
-$estado = $data['estado']; // Puede ser 'Cancelado' o 'Completado'
+$nuevoEstado = $data['nuevoEstado'];
 
 try {
     // Actualizar el estado del pedido
-    $query = "UPDATE Pedidos SET Estado = :estado WHERE ID_Pedido = :idPedido";
+    $query = "UPDATE Pedidos SET Estado = :nuevoEstado WHERE ID_Pedido = :idPedido";
     $stmt = $conn->prepare($query);
-    $stmt->bindParam(':estado', $estado);
+    $stmt->bindParam(':nuevoEstado', $nuevoEstado);
     $stmt->bindParam(':idPedido', $idPedido);
     $stmt->execute();
 
-    echo json_encode([
-        "status" => "success",
-        "message" => "Estado del pedido actualizado correctamente.",
-    ]);
+    echo json_encode(["status" => "success", "message" => "Estado del pedido actualizado correctamente."]);
 } catch (PDOException $e) {
-    echo json_encode([
-        "status" => "error",
-        "message" => "Error al actualizar el estado del pedido: " . $e->getMessage(),
-    ]);
+    echo json_encode(["status" => "error", "message" => "Error al actualizar el estado del pedido: " . $e->getMessage()]);
 }
 ?>

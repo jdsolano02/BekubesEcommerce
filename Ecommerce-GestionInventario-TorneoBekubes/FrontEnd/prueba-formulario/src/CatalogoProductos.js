@@ -17,7 +17,6 @@ import { FaFacebook, FaInstagram, FaWhatsapp } from "react-icons/fa";
 
 const CatalogoProductos = () => {
   const [productos, setProductos] = useState([]);
-  const [carrito, setCarrito] = useState([]);
   const [cantidadCarrito, setCantidadCarrito] = useState(0); // Estado para el contador del carrito
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -59,7 +58,7 @@ const CatalogoProductos = () => {
   // Agregar producto al carrito
   const agregarAlCarrito = async (producto) => {
     const idUsuario = localStorage.getItem("user_id");
-  
+
     if (!idUsuario) {
       Swal.fire({
         icon: "error",
@@ -68,13 +67,15 @@ const CatalogoProductos = () => {
       });
       return;
     }
-  
+
     // Recuperamos el carrito actual del localStorage
     let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-  
+
     // Comprobamos si el producto ya está en el carrito
-    const productoExistente = carrito.find((item) => item.ID_Producto === producto.ID_Producto);
-  
+    const productoExistente = carrito.find(
+      (item) => item.ID_Producto === producto.ID_Producto
+    );
+
     if (productoExistente) {
       // Si ya está, incrementamos la cantidad
       productoExistente.Cantidad++;
@@ -82,17 +83,23 @@ const CatalogoProductos = () => {
       // Si no está, lo agregamos al carrito
       carrito.push({ ...producto, Cantidad: 1 });
     }
-  
+
     // Guardamos el carrito actualizado en localStorage
     localStorage.setItem("carrito", JSON.stringify(carrito));
-  
+
+    // Actualizamos el estado de la cantidad del carrito
+    const nuevaCantidad = carrito.reduce(
+      (total, item) => total + item.Cantidad,
+      0
+    );
+    setCantidadCarrito(nuevaCantidad);
+
     Swal.fire({
       icon: "success",
       title: "Producto agregado",
       text: "El producto se ha añadido a tu carrito.",
     });
   };
-  
 
   // Función para cerrar sesión
   const handleLogout = async () => {
@@ -118,6 +125,19 @@ const CatalogoProductos = () => {
   // Cargar productos al inicio
   useEffect(() => {
     obtenerProductos();
+  }, []);
+  useEffect(() => {
+    // Recuperamos el carrito del localStorage
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+    // Calculamos la cantidad total de productos en el carrito
+    const cantidadTotal = carrito.reduce(
+      (total, item) => total + item.Cantidad,
+      0
+    );
+
+    // Actualizamos el estado
+    setCantidadCarrito(cantidadTotal);
   }, []);
 
   // Filtrar productos
@@ -156,9 +176,13 @@ const CatalogoProductos = () => {
                 Catalogo de Productos
               </Nav.Link>
               <Nav.Link href="/carrito" className="mx-2">
-                Carrito ({cantidadCarrito}) {/* Mostrar el contador aquí */}
+            Carrito (
+            <span style={{ color: "red", fontWeight: "bold" }}>{cantidadCarrito}</span>)
+          </Nav.Link>
+              <Nav.Link href="/pedido" className="mx-2">
+              Mis Pedidos
               </Nav.Link>
-              <Nav.Link href="/about" className="mx-2">
+              <Nav.Link href="/sobre-nosotros" className="mx-2">
                 Sobre Nosotros
               </Nav.Link>
             </Nav>

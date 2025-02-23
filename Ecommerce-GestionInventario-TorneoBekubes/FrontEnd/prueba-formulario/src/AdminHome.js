@@ -40,7 +40,7 @@ const AdminHome = () => {
                 <button className="nav-link btn btn-link" onClick={() => navigate("/gestion-productos")}>Gestionar Productos</button>
               </li>
               <li className="nav-item">
-                <button className="nav-link btn btn-link" onClick={() => navigate("/pedidos-admin")}>Pedidos</button>
+                <button className="nav-link btn btn-link" onClick={() => navigate("/pedidos-admin")}>Pedidos Usuarios</button>
               </li>
             </ul>
             <span className="navbar-text text-white me-3">Bienvenido, {adminEmail}</span>
