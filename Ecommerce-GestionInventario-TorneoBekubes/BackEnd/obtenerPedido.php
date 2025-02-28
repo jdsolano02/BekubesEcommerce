@@ -1,4 +1,5 @@
 <?php
+
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET");
@@ -10,23 +11,15 @@ try {
     // Verificar si se proporcionó un filtro por estado (para el admin)
     $filtroEstado = isset($_GET['estado']) ? $_GET['estado'] : null;
 
-    // Consulta para obtener todos los pedidos con sus detalles
+    // Consulta para obtener todos los pedidos sin detalles
     $query = "
         SELECT 
             p.ID_Pedido, 
             p.Estado, 
             p.Fecha, 
-            p.Email,
-            pd.ID_Producto, 
-            pd.Cantidad, 
-            pd.Precio, 
-            pr.Nombre AS Producto
+            p.Email
         FROM 
             Pedidos p
-        JOIN 
-            PedidoDetalles pd ON p.ID_Pedido = pd.ID_Pedido
-        JOIN 
-            Productos pr ON pd.ID_Producto = pr.ID_Producto
         WHERE 
             (:estado IS NULL OR p.Estado = :estado)
     ";

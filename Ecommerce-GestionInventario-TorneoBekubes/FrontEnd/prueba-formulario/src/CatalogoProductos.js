@@ -59,47 +59,49 @@ const CatalogoProductos = () => {
   const agregarAlCarrito = async (producto) => {
     const idUsuario = localStorage.getItem("user_id");
 
+    // Verificar si el usuario ha iniciado sesión
     if (!idUsuario) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Debes iniciar sesión para agregar productos al carrito.",
-      });
-      return;
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Debes iniciar sesión para agregar productos al carrito.",
+        });
+        return;
     }
 
-    // Recuperamos el carrito actual del localStorage
+    // Recuperar el carrito actual del localStorage
     let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-    // Comprobamos si el producto ya está en el carrito
+    // Verificar si el producto ya está en el carrito
     const productoExistente = carrito.find(
-      (item) => item.ID_Producto === producto.ID_Producto
+        (item) => item.ID_Producto === producto.ID_Producto
     );
 
     if (productoExistente) {
-      // Si ya está, incrementamos la cantidad
-      productoExistente.Cantidad++;
+        // Si ya está, incrementar la cantidad (se verifica que no pase de un límite si es necesario)
+        productoExistente.Cantidad++;
     } else {
-      // Si no está, lo agregamos al carrito
-      carrito.push({ ...producto, Cantidad: 1 });
+        // Si no está, agregarlo al carrito con cantidad inicial 1
+        carrito.push({ ...producto, Cantidad: 1 });
     }
 
-    // Guardamos el carrito actualizado en localStorage
+    // Guardar el carrito actualizado en localStorage
     localStorage.setItem("carrito", JSON.stringify(carrito));
 
-    // Actualizamos el estado de la cantidad del carrito
+    // Actualizar el estado de la cantidad del carrito (total de productos)
     const nuevaCantidad = carrito.reduce(
-      (total, item) => total + item.Cantidad,
-      0
+        (total, item) => total + item.Cantidad,
+        0
     );
     setCantidadCarrito(nuevaCantidad);
 
+    // Mostrar mensaje de éxito
     Swal.fire({
-      icon: "success",
-      title: "Producto agregado",
-      text: "El producto se ha añadido a tu carrito.",
+        icon: "success",
+        title: "Producto agregado",
+        text: "El producto se ha añadido a tu carrito.",
     });
-  };
+};
 
   // Función para cerrar sesión
   const handleLogout = async () => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Navbar, Nav, Container, Row, Col, NavDropdown } from "react-bootstrap";
+import { Navbar, Nav, Container, Row, Col, NavDropdown, Button } from "react-bootstrap";
 import { FaFacebook, FaInstagram, FaWhatsapp } from "react-icons/fa";
 
 const Pedidos = () => {
@@ -33,6 +33,12 @@ const Pedidos = () => {
     }
   };
 
+  // Función para manejar el pago de un pedido
+  const handlePagar = (idPedido) => {
+    // Redirigir al usuario a la página de pago con el ID del pedido
+    navigate(`/pagar/${idPedido}`);
+  };
+
   const handleLogout = async () => {
     await fetch(
       "http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/logout.php"
@@ -53,7 +59,7 @@ const Pedidos = () => {
         title: "Error",
         text: "Debes iniciar sesión para ver tus pedidos.",
       }).then(() => {
-        navigate("/login"); // Redirigir al usuario a la página de login
+        navigate("/login"); 
       });
     }
   }, [idUsuario, navigate]);
@@ -127,6 +133,8 @@ const Pedidos = () => {
               <th>ID Pedido</th>
               <th>Estado</th>
               <th>Fecha</th>
+              <th>Total de Pago</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -135,6 +143,17 @@ const Pedidos = () => {
                 <td>{pedido.ID_Pedido}</td>
                 <td>{pedido.Estado}</td>
                 <td>{pedido.Fecha}</td>
+                <td>{pedido.Total}</td>
+                <td>
+                  {/* Botón de pagar */}
+                  <Button
+                    variant="primary"
+                    onClick={() => handlePagar(pedido.ID_Pedido)}
+                    disabled={pedido.Estado === "Enviado" || pedido.Estado === "Entregado"} // Deshabilitar si el estado es "Completado"
+                  >
+                    {pedido.Estado === "Enviado" || pedido.Estado === "Entregado" ? "Pagado" : "Pagar"}
+                  </Button>
+                </td>
               </tr>
             ))}
           </tbody>

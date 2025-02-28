@@ -15,9 +15,10 @@ import GestionProductos from "./GestionProductos";
 import CatalogoProductos from "./CatalogoProductos";
 import Carrito from "./Carrito";
 import Pedidos from "./Pedidos";
-import PedidosAdmin from "./PedidosAdmin"
-import Inventario from "./Inventario"
-import SobreNosotros from "./sobreNosotros"
+import PedidosAdmin from "./PedidosAdmin";
+import Inventario from "./Inventario";
+import SobreNosotros from "./sobreNosotros";
+import Pagar from "./Pago";
 
 function App() {
   return (
@@ -67,6 +68,14 @@ function App() {
         element={
           <PrivateRoute role="Cliente">
             <SobreNosotros />
+          </PrivateRoute>
+        }
+      />
+                                                                <Route
+        path="/pagar/:idPedido"
+        element={
+          <PrivateRoute role="Cliente">
+            <Pagar />
           </PrivateRoute>
         }
       />

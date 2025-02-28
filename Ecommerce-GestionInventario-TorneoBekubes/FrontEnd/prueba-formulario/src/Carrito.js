@@ -54,70 +54,67 @@ const Carrito = () => {
   };
 
   // Generar Pedidos
+  let procesandoPedido = false;
+
   const finalizarCompra = async () => {
-    const idUsuario = localStorage.getItem("user_id"); // Obtén el ID del usuario
+    if (procesandoPedido) return; // Evita múltiples llamadas
+    procesandoPedido = true;
+
+    const boton = document.getElementById("btnFinalizarCompra");
+    if (boton) boton.disabled = true; // Deshabilita el botón temporalmente
+
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    const idUsuario = localStorage.getItem("user_id");
     const email = localStorage.getItem("email");
 
-    if (!idUsuario) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Debes iniciar sesión para finalizar la compra.",
-      });
-      return;
-    }
-
     if (carrito.length === 0) {
-      Swal.fire({
-        icon: "warning",
-        title: "Carrito vacío",
-        text: "No hay productos en el carrito.",
-      });
-      return;
+        Swal.fire({
+            icon: "warning",
+            title: "Carrito vacío",
+            text: "No hay productos en el carrito.",
+        });
+        procesandoPedido = false;
+        if (boton) boton.disabled = false; // Reactivar el botón
+        return;
     }
 
     try {
-      // Enviar los datos del carrito al backend
-      const response = await fetch(
-        "http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/agregarPedido.php",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            idUsuario: idUsuario,
-            items: carrito,
-            email: email,
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (data.status === "success") {
-        Swal.fire({
-          icon: "success",
-          title: "Pedido creado",
-          text: "Tu pedido se ha creado correctamente.",
+        const response = await fetch("http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/agregarPedido.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                idUsuario: idUsuario,
+                email: email,
+                items: carrito,
+            }),
         });
 
-        // Limpiar el carrito después de finalizar la compra
-        setCarrito([]);
-        localStorage.removeItem("carrito");
-        setTotal(0);
-      } else {
-        throw new Error(data.message);
-      }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: error.message,
-      });
-    }
-  };
+        const data = await response.json();
+        console.log("Respuesta del backend:", data);
 
+        if (data.status === "success") {
+            Swal.fire({
+                icon: "success",
+                title: "Pedido creado",
+                text: "Tu pedido se ha creado correctamente.",
+            });
+            localStorage.removeItem("carrito");
+        } else {
+            throw new Error(data.message);
+        }
+    } catch (error) {
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: error.message,
+        });
+    } finally {
+        procesandoPedido = false;
+        if (boton) boton.disabled = false; // Reactivar el botón
+    }
+};
+
+  
   // Cargar el carrito al montar el componente
   useEffect(() => {
     obtenerCarrito();
