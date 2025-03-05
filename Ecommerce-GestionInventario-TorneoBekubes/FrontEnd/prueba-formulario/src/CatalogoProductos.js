@@ -320,7 +320,7 @@ const CatalogoProductos = () => {
                 <strong>Descripción:</strong> {selectedProduct.Descripcion}
               </p>
               <p>
-                <strong>Precio:</strong> ${selectedProduct.Precio.toFixed(2)}
+                <strong>Precio:</strong> ₡{selectedProduct.Precio.toFixed(2)}
               </p>
               <p>
                 <strong>Stock:</strong> {selectedProduct.Stock}

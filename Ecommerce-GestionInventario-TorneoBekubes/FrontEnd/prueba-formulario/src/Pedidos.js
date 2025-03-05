@@ -143,7 +143,7 @@ const Pedidos = () => {
                 <td>{pedido.ID_Pedido}</td>
                 <td>{pedido.Estado}</td>
                 <td>{pedido.Fecha}</td>
-                <td>{pedido.Total}</td>
+                <td>₡{pedido.Total}</td>
                 <td>
                   {/* Botón de pagar */}
                   <Button

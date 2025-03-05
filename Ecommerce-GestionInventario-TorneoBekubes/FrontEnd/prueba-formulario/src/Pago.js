@@ -7,6 +7,7 @@ const Pago = () => {
   const [totalCRC, setTotalCRC] = useState(null); // Total en CRC
   const [totalUSD, setTotalUSD] = useState(null); // Total en USD
   const [exchangeRate, setExchangeRate] = useState(null); // Tasa de cambio (CRC a USD)
+  const [paymentSuccess, setPaymentSuccess] = useState(false); // Estado para controlar si el pago fue exitoso
 
   // Cargar el script de PayPal
   useEffect(() => {
@@ -120,32 +121,33 @@ const Pago = () => {
               fetch("http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/procesoPago.php", {
                 method: "POST",
                 headers: {
-                  "Content-Type": "application/json",
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                  transactionId: data.orderID,
-                  payerName: details.payer.name.given_name,
-                  amount: totalUSD,
-                  idPedido: idPedido,
+                    transactionId: data.orderID,
+                    payerName: details.payer.name.given_name,
+                    amount: totalUSD,
+                    idPedido: idPedido,
                 }),
-              })
-                .then((response) => {
-                  if (!response.ok) {
-                    throw new Error("Error en la respuesta del servidor");
-                  }
-                  return response.json(); // Convertir la respuesta a JSON
-                })
-                .then((data) => {
-                  if (data.success) {
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text) }); // Captura la respuesta como texto
+                }
+                return response.json(); // Convertir la respuesta a JSON
+            })
+            .then((data) => {
+                if (data.success) {
                     console.log("Pago registrado exitosamente", data);
-                  } else {
+                    setPaymentSuccess(true); // Actualizar el estado para mostrar el mensaje de agradecimiento
+                } else {
                     console.error("Error al registrar el pago:", data.error);
-                  }
-                })
-                .catch((error) => {
-                  console.error("Error al registrar el pago", error);
-                });
+                }
+            })
+            .catch((error) => {
+                console.error("Error al registrar el pago", error.message); // Muestra el mensaje de error completo
             });
+          });
           },
         })
         .render("#paypal-button-container");
@@ -157,11 +159,13 @@ const Pago = () => {
   return (
     <div className="container mt-5">
       <h2>Pago con PayPal</h2>
-      {paypalLoaded && totalUSD !== null && !isNaN(totalUSD) ? (
-        <div
-          id="paypal-button-container"
-
-        ></div>
+      {paymentSuccess ? (
+        <div className="alert alert-success">
+          <h3>¡Gracias por su compra!</h3>
+          <p>Su pago ha sido procesado exitosamente y su pedido está siendo enviado.</p>
+        </div>
+      ) : paypalLoaded && totalUSD !== null && !isNaN(totalUSD) ? (
+        <div id="paypal-button-container"></div>
       ) : (
         <p>Cargando PayPal y total del pedido...</p>
       )}
@@ -170,13 +174,3 @@ const Pago = () => {
 };
 
 export default Pago;
-
-
-
-
-
-
-
-
-
-

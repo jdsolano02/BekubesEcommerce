@@ -140,7 +140,7 @@ const Carrito = () => {
             {carrito.map((item) => (
               <tr key={item.ID_Producto}>
                 <td>{item.Nombre}</td>
-                <td>${item.Precio.toFixed(2)}</td>
+                <td>₡{item.Precio.toFixed(2)}</td>
                 <td>
                   <div className="d-flex justify-content-center">
                     <button
@@ -158,7 +158,7 @@ const Carrito = () => {
                     </button>
                   </div>
                 </td>
-                <td>${(item.Precio * item.Cantidad).toFixed(2)}</td>
+                <td>₡{(item.Precio * item.Cantidad).toFixed(2)}</td>
                 <td>
                   <button
                     className="btn btn-danger btn-sm"
@@ -175,7 +175,7 @@ const Carrito = () => {
 
       {/* Resumen del carrito */}
       <div className="text-end mt-4">
-        <h4>Total: ${total.toFixed(2)}</h4>
+        <h4>Total: ₡{total.toFixed(2)}</h4>
         <div className="d-flex justify-content-end gap-2">
           <button
             className="btn btn-secondary"

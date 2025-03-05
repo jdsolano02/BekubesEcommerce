@@ -419,7 +419,7 @@ const convertirImagenABase64 = async (imagen) => {
               <tr key={producto.ID_Producto}>
                 <td>{producto.Nombre}</td>
                 <td>{producto.Descripcion}</td>
-                <td>${producto.Precio.toFixed(2)}</td>
+                <td>₡{producto.Precio.toFixed(2)}</td>
                 <td>{producto.Stock}</td>
                 <td>
                   {producto.Imagen && (
