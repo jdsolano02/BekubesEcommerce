@@ -131,3 +131,11 @@ CREATE TABLE PedidoDetalles (
     FOREIGN KEY (ID_Pedido) REFERENCES Pedidos(ID_Pedido),
     FOREIGN KEY (ID_Producto) REFERENCES Productos(ID_Producto)
 );
+--- Crear tabla facturas para guardarlas----
+CREATE TABLE Facturas (
+    ID_Factura INT PRIMARY KEY AUTO_INCREMENT,
+    ID_Pedido INT NOT NULL,
+    Ruta_PDF VARCHAR(255) NOT NULL,
+    Fecha_Creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ID_Pedido) REFERENCES Pedidos(ID_Pedido)
+);

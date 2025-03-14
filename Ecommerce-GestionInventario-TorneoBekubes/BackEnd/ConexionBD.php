@@ -2,7 +2,7 @@
 $host = 'localhost';
 $dbname = 'plataformabekubes';
 $username = 'root';
-$password = 'htfpq98310';
+$password = 'Htfpq98310';
 
 try {
     $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);

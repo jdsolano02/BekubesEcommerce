@@ -19,7 +19,7 @@ import PedidosAdmin from "./PedidosAdmin";
 import Inventario from "./Inventario";
 import SobreNosotros from "./sobreNosotros";
 import Pagar from "./Pago";
-
+import Factura from "./Facturas"
 function App() {
   return (
     <Router>
@@ -79,7 +79,14 @@ function App() {
           </PrivateRoute>
         }
       />
-
+                                                         <Route
+        path="/factura/:idPedido"
+        element={
+          <PrivateRoute role="Cliente">
+            <Factura />
+          </PrivateRoute>
+        }
+      />
         {/* Rutas protegidas Administrador */}
         <Route
           path="/admin-home"

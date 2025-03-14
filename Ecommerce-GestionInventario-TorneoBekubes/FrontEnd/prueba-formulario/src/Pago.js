@@ -8,7 +8,7 @@ const Pago = () => {
   const [totalUSD, setTotalUSD] = useState(null); // Total en USD
   const [exchangeRate, setExchangeRate] = useState(null); // Tasa de cambio (CRC a USD)
   const [paymentSuccess, setPaymentSuccess] = useState(false); // Estado para controlar si el pago fue exitoso
-
+  const email = localStorage.getItem('email'); // Obtener el correo desde localStorage
   // Cargar el script de PayPal
   useEffect(() => {
     if (!window.paypal) {
@@ -125,9 +125,10 @@ const Pago = () => {
                 },
                 body: JSON.stringify({
                     transactionId: data.orderID,
-                    payerName: details.payer.name.given_name,
+                    payerName: details.payer.name.given_name + " " + details.payer.name.surname, // Nombre completo
                     amount: totalUSD,
                     idPedido: idPedido,
+                    payerEmail: email, // Usar el correo del localStorage
                 }),
             })
             .then((response) => {

@@ -77,7 +77,7 @@ if ($stmt->execute()) {
         $mail->Host = 'smtp.gmail.com'; 
         $mail->SMTPAuth = true;
         $mail->Username = 'crissnchz983@gmail.com'; 
-        $mail->Password = 'wxpj pmis kxlj amsx'; 
+        $mail->Password = 'uydo qskr myvq oqam'; 
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 

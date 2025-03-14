@@ -135,6 +135,7 @@ const Pedidos = () => {
               <th>Fecha</th>
               <th>Total de Pago</th>
               <th>Acciones</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -154,6 +155,14 @@ const Pedidos = () => {
                     {pedido.Estado === "Enviado" || pedido.Estado === "Entregado" ? "Pagado" : "Pagar"}
                   </Button>
                 </td>
+                <td>
+                <button
+                  onClick={() => navigate(`/factura/${pedido.ID_Pedido}`)} // Navegar a la factura
+                  className="btn btn-info"
+                >
+                  <i className="fas fa-file-invoice"></i> Ver Factura
+                </button>
+              </td>
               </tr>
             ))}
           </tbody>
