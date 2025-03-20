@@ -166,7 +166,19 @@ const Pago = () => {
           <p>Su pago ha sido procesado exitosamente y su pedido está siendo enviado.</p>
         </div>
       ) : paypalLoaded && totalUSD !== null && !isNaN(totalUSD) ? (
-        <div id="paypal-button-container"></div>
+        <div>
+          {/* Disclaimer sobre el tipo de cambio */}
+          <div className="alert alert-info mb-4">
+            <p>
+              <strong>Importante:</strong> El pago se realizará en dólares estadounidenses (USD).
+              <br />
+              El tipo de cambio utilizado es <strong>1 USD = {exchangeRate} CRC</strong>.
+              <br />
+              El monto convertido es <strong>{totalUSD} USD</strong>.
+            </p>
+          </div>
+          <div id="paypal-button-container"></div>
+        </div>
       ) : (
         <p>Cargando PayPal y total del pedido...</p>
       )}
