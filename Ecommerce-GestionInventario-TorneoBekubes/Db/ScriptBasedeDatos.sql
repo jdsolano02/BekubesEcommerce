@@ -8,7 +8,16 @@ CREATE TABLE Usuarios (
     Email VARCHAR(100) UNIQUE,
     Password VARCHAR(255),
     Rol ENUM('Cliente', 'Administrador'),
-    FechaCreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    FechaCreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    -- Campos de verificación de email
+    Verificado BOOLEAN DEFAULT FALSE,
+    TokenVerificacion VARCHAR(255),
+    FechaLimiteVerificacion TIMESTAMP,
+    -- Campos para recuperación de contraseña
+    reset_token VARCHAR(255),
+    token_expiration DATETIME,
+    -- Estado de la cuenta (activo/inactivo)
+    Estado BOOLEAN DEFAULT FALSE
 );
 CREATE TABLE Historial_Usuarios (
     ID_HistorialU INT PRIMARY KEY AUTO_INCREMENT,
@@ -24,13 +33,6 @@ CREATE TABLE Reseñas (
     ID_Usuario INT,
     FOREIGN KEY (ID_Usuario) REFERENCES Usuarios(ID_Usuario)
 );
-CREATE TABLE Notificaciones (
-    ID_Notificacion INT PRIMARY KEY AUTO_INCREMENT,
-    Mensaje TEXT,
-    Fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    ID_Usuario INT,
-    FOREIGN KEY (ID_Usuario) REFERENCES Usuarios(ID_Usuario)
-);
 CREATE TABLE Torneos (
     ID_Torneo INT PRIMARY KEY AUTO_INCREMENT,
     Nombre VARCHAR(100),
@@ -42,28 +44,28 @@ CREATE TABLE Productos (
     ID_Producto INT PRIMARY KEY AUTO_INCREMENT,
     Nombre VARCHAR(100),
     Descripcion TEXT,
-    Precio DOUBLE
-);
-CREATE TABLE Carrito (
-    ID_Carrito INT PRIMARY KEY AUTO_INCREMENT,
-    Total DOUBLE,
-    ID_Usuario INT,
-    FOREIGN KEY (ID_Usuario) REFERENCES Usuarios(ID_Usuario)
-);
-CREATE TABLE Items_Carrito (
-    ID_Item INT PRIMARY KEY AUTO_INCREMENT,
-    ID_Carrito INT,
-    ID_Producto INT,
-    Cantidad INT,
-    Subtotal DOUBLE,
-    FOREIGN KEY (ID_Carrito) REFERENCES Carrito(ID_Carrito),
-    FOREIGN KEY (ID_Producto) REFERENCES Productos(ID_Producto)
+    Precio DOUBLE,
+    -- Nuevos campos añadidos
+    Tipo VARCHAR(255),
+    Dificultad VARCHAR(255),
+    Imagen LONGBLOB,
+    Estado BOOLEAN DEFAULT FALSE
 );
 CREATE TABLE Pedidos (
     ID_Pedido INT PRIMARY KEY AUTO_INCREMENT,
     Estado ENUM('Procesando', 'Enviado', 'Entregado'),
-    ID_Carrito INT,
-    FOREIGN KEY (ID_Carrito) REFERENCES Carrito(ID_Carrito)
+    ID_Usuario INT,
+    Email  VARCHAR(255),
+    Fecha  DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE PedidoDetalles (
+    ID_Detalle INT PRIMARY KEY AUTO_INCREMENT,
+    ID_Pedido INT,
+    ID_Producto INT,
+    Cantidad INT,
+    Precio DECIMAL(10,2),
+    FOREIGN KEY (ID_Pedido) REFERENCES Pedidos(ID_Pedido),
+    FOREIGN KEY (ID_Producto) REFERENCES Productos(ID_Producto)
 );
 CREATE TABLE Pagos (
     ID_Pago INT PRIMARY KEY AUTO_INCREMENT,
@@ -79,6 +81,13 @@ CREATE TABLE Metodo_Pago (
     ID_Pago INT,
     FOREIGN KEY (ID_Pago) REFERENCES Pagos(ID_Pago)
 );
+CREATE TABLE Facturas (
+    ID_Factura INT PRIMARY KEY AUTO_INCREMENT,
+    ID_Pedido INT NOT NULL,
+    Ruta_PDF VARCHAR(255) NOT NULL,
+    Fecha_Creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ID_Pedido) REFERENCES Pedidos(ID_Pedido)
+);
 CREATE TABLE Inventario (
     ID_Inventario INT PRIMARY KEY AUTO_INCREMENT,
     ID_Producto INT,
@@ -88,7 +97,7 @@ CREATE TABLE Inventario (
     FechaModificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	FOREIGN KEY (ID_Producto) REFERENCES Productos(ID_Producto)
 );
-
+----------------------------------------------------------------------------------------------
 ALTER TABLE Usuarios
 ADD Verificado BOOLEAN DEFAULT 0, 
 ADD TokenVerificacion VARCHAR(255), 

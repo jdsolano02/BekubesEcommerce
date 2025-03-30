@@ -222,7 +222,7 @@ const Inventario = () => {
                     }}
                   />
                 </td>
-                <td>0</td> {/* Mostrar siempre 0 como stock mínimo */}
+                <td>15</td> {/* Mostrar siempre 0 como stock mínimo */}
                 <td>
                   <button
                     className="btn btn-primary"

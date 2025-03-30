@@ -11,7 +11,49 @@ const PedidosAdmin = () => {
   const [todosLosPedidos, setTodosLosPedidos] = useState([]); // Todos los pedidos
   const [pedidosFiltrados, setPedidosFiltrados] = useState([]); // Pedidos filtrados
   const [filtroEstado, setFiltroEstado] = useState(""); // Estado seleccionado para filtrar
+  const [enviandoResumenes, setEnviandoResumenes] = useState(false);
 
+    // Función para enviar resúmenes a todos los clientes verificados
+    const enviarResumenesPedidos = async () => {
+      setEnviandoResumenes(true);
+    
+      try {
+        const response = await fetch(
+          "http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/enviarResumenPedidos.php",
+          {
+            method: "POST",
+            credentials: "include", // Incluye cookies o credenciales
+            headers: {
+              "Content-Type": "application/json", // Importante si se envían datos JSON
+            },
+          }
+        );
+    
+        const data = await response.json();
+    
+        if (data.status === "success") {
+          Swal.fire({
+            icon: "success",
+            title: "Resúmenes enviados",
+            html: `
+              <p>Total clientes: ${data.data.total_clientes}</p>
+              <p>Enviados exitosamente: ${data.data.enviados}</p>
+              <p>Errores: ${data.data.errores}</p>
+            `,
+          });
+        } else {
+          throw new Error(data.message || "Error al enviar resúmenes");
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error.message,
+        });
+      } finally {
+        setEnviandoResumenes(false);
+      }
+    };
   // Función para cargar los pedidos desde el backend
   const cargarPedidos = async () => {
     try {
@@ -166,6 +208,21 @@ const PedidosAdmin = () => {
       {/* Contenido de la página de pedidos */}
       <div className="container mt-5">
         <h1>Pedidos</h1>
+        <button 
+            className="btn btn-warning"
+            onClick={enviarResumenesPedidos}
+            disabled={enviandoResumenes}
+          >
+            {enviandoResumenes ? (
+              <>
+                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Enviando...
+              </>
+            ) : (
+              "Enviar Resúmenes a Clientes"
+            )}
+          </button>
+          <h1> </h1>
         <select
           className="form-select mb-3"
           onChange={(e) => setFiltroEstado(e.target.value)}

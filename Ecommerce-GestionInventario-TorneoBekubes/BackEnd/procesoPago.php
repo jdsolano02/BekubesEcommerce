@@ -153,7 +153,7 @@ $stmtFactura->execute();
     $mail->Host = 'smtp.gmail.com'; // Servidor SMTP de Gmail
     $mail->SMTPAuth = true;
     $mail->Username = 'crissnchz983@gmail.com'; // Tu correo
-    $mail->Password = 'uydo qskr myvq oqam'; // Tu contraseña (usar clave de aplicación si es Gmail)
+    $mail->Password = 'odmy iqen gjkp dzjg'; // Tu contraseña (usar clave de aplicación si es Gmail)
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Usar TLS
     $mail->Port = 587; // Puerto para TLS
 
