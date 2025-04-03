@@ -54,3 +54,123 @@
   .cta-section .btn {
     margin-top: 20px;
   }
+
+/* Estilos para la sección de reseñas */
+.testimonios-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.testimonio-card {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.testimonio-card:hover {
+  transform: translateY(-5px);
+}
+
+.testimonio-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.testimonio-fecha {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.blockquote {
+  font-size: 1rem;
+  border-left: 3px solid #0d6efd;
+  padding-left: 15px;
+}
+
+.blockquote-footer {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+/* Estilos para el sistema de reseñas */
+.testimonios-container {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.testimonio-card {
+  background-color: white;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  transition: transform 0.2s;
+}
+
+.testimonio-card:hover {
+  transform: translateY(-2px);
+}
+
+.star-filled {
+  color: #ffc107;
+  font-size: 1rem;
+}
+
+.rating-input {
+  display: flex;
+  gap: 5px;
+}
+
+.rating-input i {
+  cursor: pointer;
+  font-size: 1.5rem;
+  transition: all 0.2s;
+}
+
+.rating-input i:hover {
+  transform: scale(1.1);
+}
+
+/* SobreNosotros.css */
+
+/* Estilos para el botón de eliminar */
+.btn-outline-danger {
+  transition: all 0.3s ease;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Estilos para el botón de enviar */
+.btn-primary {
+  min-width: 120px;
+}
+
+/* Ajustes para los testimonios */
+.reseña-text {
+  margin-bottom: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+/* Estilos para las estrellas de valoración */
+.star-rating {
+  font-size: 1.2rem;
+}
+
+.star-filled {
+  color: #ffc107;
+}
+
+.star-empty {
+  color: #e4e5e9;
+}
+

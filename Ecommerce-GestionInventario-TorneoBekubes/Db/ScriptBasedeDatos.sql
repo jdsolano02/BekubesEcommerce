@@ -30,7 +30,10 @@ CREATE TABLE Reseñas (
     ID_Reseña INT PRIMARY KEY AUTO_INCREMENT,
     Comentario TEXT,
     Valoracion INT CHECK (Valoracion BETWEEN 1 AND 5),
+    Fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     ID_Usuario INT,
+    Estado BOOLEAN DEFAULT 1 COMMENT '1=Activa, 0=Eliminada',
+    likes INT DEFAULT 0,
     FOREIGN KEY (ID_Usuario) REFERENCES Usuarios(ID_Usuario)
 );
 CREATE TABLE Torneos (
@@ -38,7 +41,17 @@ CREATE TABLE Torneos (
     Nombre VARCHAR(100),
     Fecha DATE,
     Ubicacion VARCHAR(255),
-    Categoria VARCHAR(50)
+    Categoria VARCHAR(50),
+    Estado BOOLEAN DEFAULT 1 COMMENT '1=Activa, 0=Eliminada'
+);
+CREATE TABLE Inscripciones (
+    ID_Inscripcion INT PRIMARY KEY AUTO_INCREMENT,
+    usuario_id INT NOT NULL,
+    torneo_id INT NOT NULL,
+    fecha_inscripcion DATE NOT NULL,
+    estado ENUM('pendiente', 'confirmada', 'cancelada') DEFAULT 'pendiente',
+    FOREIGN KEY (usuario_id) REFERENCES Usuarios(ID_Usuario),
+    FOREIGN KEY (torneo_id) REFERENCES Torneos(ID_Torneo)
 );
 CREATE TABLE Productos (
     ID_Producto INT PRIMARY KEY AUTO_INCREMENT,
@@ -148,3 +161,12 @@ CREATE TABLE Facturas (
     Fecha_Creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (ID_Pedido) REFERENCES Pedidos(ID_Pedido)
 );
+
+ALTER TABLE Reseñas
+ADD COLUMN ID_Producto INT NOT NULL AFTER ID_Reseña,
+ADD COLUMN Fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER Valoracion,
+ADD COLUMN Estado BOOLEAN DEFAULT 1 COMMENT '1=Activa, 0=Eliminada',
+ADD COLUMN Likes INT DEFAULT 0,
+ADD FOREIGN KEY (ID_Producto) REFERENCES Productos(ID_Producto);
+
+ALTER TABLE Reseñas MODIFY COLUMN ID_Producto INT NULL;

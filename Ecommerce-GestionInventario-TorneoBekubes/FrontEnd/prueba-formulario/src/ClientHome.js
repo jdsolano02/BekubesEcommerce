@@ -43,7 +43,7 @@ const ClientHome = () => {
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="ms-auto">
+            <Nav Nav  className="ms-auto d-flex flex-nowrap" style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
               <Nav.Link href="/catalogo-productos" className="mx-2">
                 Catalogo de Productos
               </Nav.Link>
@@ -59,6 +59,9 @@ const ClientHome = () => {
               </Nav.Link>
               <Nav.Link href="/sobre-nosotros" className="mx-2">
                 Sobre Nosotros
+              </Nav.Link>
+              <Nav.Link href="/client-torneo" className="mx-2">
+                Torneos
               </Nav.Link>
             </Nav>
             <Nav>

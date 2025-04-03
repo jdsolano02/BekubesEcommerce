@@ -191,8 +191,11 @@ const PedidosAdmin = () => {
                   className="nav-link btn btn-link"
                   onClick={() => navigate("/pedidos-admin")}
                 >
-                  Pedidos
+                  Pedido Usuarios
                 </button>
+              </li>
+              <li className="nav-item">
+                <button className="nav-link btn btn-link" onClick={() => navigate("/admin-torneo")}>Torneos</button>
               </li>
             </ul>
             <span className="navbar-text text-white me-3">

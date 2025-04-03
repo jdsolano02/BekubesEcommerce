@@ -19,7 +19,9 @@ import PedidosAdmin from "./PedidosAdmin";
 import Inventario from "./Inventario";
 import SobreNosotros from "./sobreNosotros";
 import Pagar from "./Pago";
-import Factura from "./Facturas"
+import Factura from "./Facturas";
+import AdminTorneo from "./AdminTorneo";
+import ClientTorneo from "./ClientTorneo";
 function App() {
   return (
     <Router>
@@ -87,6 +89,14 @@ function App() {
           </PrivateRoute>
         }
       />
+                                                               <Route
+        path="/client-torneo"
+        element={
+          <PrivateRoute role="Cliente">
+            <ClientTorneo />
+          </PrivateRoute>
+        }
+      />
         {/* Rutas protegidas Administrador */}
         <Route
           path="/admin-home"
@@ -133,6 +143,14 @@ function App() {
           element={
             <PrivateRoute role="Administrador">
               <Inventario />
+            </PrivateRoute>
+          }
+        />
+                                    <Route
+          path="/admin-torneo"
+          element={
+            <PrivateRoute role="Administrador">
+              <AdminTorneo />
             </PrivateRoute>
           }
         />
