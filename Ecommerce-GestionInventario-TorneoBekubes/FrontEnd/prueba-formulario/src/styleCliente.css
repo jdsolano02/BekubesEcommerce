@@ -1,0 +1,63 @@
+/* Estilos generales */
+body {
+  font-family: 'Segoe UI';
+}
+
+.hero-section {
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.83), rgb(255, 255, 255));
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+}
+
+/* Navbar */
+.navbar-dark .navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.85);
+  padding: 0.5rem 1rem;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+  color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .hero-section {
+    padding: 60px 0;
+    text-align: center;
+  }
+  
+  .navbar-collapse {
+    padding-top: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .display-5 {
+    font-size: 2.2rem;
+  }
+  
+  .benefits-section .col-md-4 {
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Footer */
+footer a {
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+footer a:hover {
+  color: #815903 !important;
+}
+
+.social-icons a {
+  display: inline-block;
+  margin-right: 15px;
+  transition: transform 0.3s;
+}
+
+.social-icons a:hover {
+  transform: translateY(-3px);
+}

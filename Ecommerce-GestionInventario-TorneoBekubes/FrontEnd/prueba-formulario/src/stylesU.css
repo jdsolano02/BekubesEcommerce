@@ -185,3 +185,45 @@
   .btn-secondary:hover {
     background-color: #5a6268;
   }
+  @media (max-width: 768px) {
+  .container2 {
+    padding: 0 10px;
+  }
+  
+  .table-responsive {
+    border: 0;
+  }
+  
+  .table-responsive table {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  .table-responsive thead {
+    display: none;
+  }
+  
+  .table-responsive tr {
+    margin-bottom: 10px;
+    display: block;
+    border: 1px solid #ddd;
+  }
+  
+  .table-responsive td {
+    display: block;
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px dotted #ccc;
+  }
+  
+  .table-responsive td:before {
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+  }
+  
+  .btn {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}

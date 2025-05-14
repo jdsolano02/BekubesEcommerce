@@ -187,7 +187,9 @@ const Usuarios = () => {
                 ? "Ocultar usuarios deshabilitados"
                 : "Ver usuarios deshabilitados"}
             </button>
-            <table className="table">
+            {/* Contenedor responsive para la tabla */}
+            <div className="table-responsive">
+            <table className="table table-striped table-bordered">
               <thead>
                 <tr>
                   <th>ID</th>
@@ -232,6 +234,7 @@ const Usuarios = () => {
                 ))}
               </tbody>
             </table>
+            </div>
             <button
               className="btn btn-volver"
               onClick={() => navigate("/admin-home")}

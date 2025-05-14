@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styleAdmin.css";
 
+
 const Inventario = () => {
   const navigate = useNavigate();
   const adminEmail = localStorage.getItem("email");
@@ -191,56 +192,58 @@ const Inventario = () => {
         </nav>
       </div>
 
-      {/* Contenido de la página de inventario */}
-      <div className="container mt-5">
-        <h1>Inventario</h1>
-        <table className="table table-bordered">
-          <thead>
-            <tr>
-              <th>ID Producto</th>
-              <th>Producto</th>
-              <th>Stock</th>
-              <th>Stock Mínimo</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {inventario.map((item) => (
-              <tr key={item.ID_Inventario}>
-                <td>{item.ID_Producto}</td>
-                <td>{item.Producto}</td>
-                <td>
-                  <input
-                    type="number"
-                    className="form-control"
-                    value={item.Stock}
-                    min="0" // No permitir valores menores a 0
-                    onChange={(e) => {
-                      const nuevoInventario = inventario.map((i) =>
-                        i.ID_Inventario === item.ID_Inventario
-                          ? { ...i, Stock: e.target.value }
-                          : i
-                      );
-                      setInventario(nuevoInventario);
-                    }}
-                  />
-                </td>
-                <td>15</td> {/* Mostrar siempre 0 como stock mínimo */}
-                <td>
-                  <button
-                    className="btn btn-primary"
-                    onClick={() =>
-                      actualizarStock(item.ID_Inventario, item.Stock)
-                    }
-                  >
-                    Actualizar
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+    {/* Contenido de la página de inventario */}
+<div className="container mt-5">
+  <h1 className="mb-4">Inventario</h1>
+  
+  {/* Contenedor responsive para la tabla */}
+  <div className="table-responsive">
+    <table className="table table-bordered table-hover">
+      <thead className="table-dark">
+        <tr>
+          <th>ID</th>
+          <th>Producto</th>
+          <th>Stock</th>
+          <th>Mínimo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {inventario.map((item) => (
+          <tr key={item.ID_Inventario} className={item.Stock < item.Stock_Minimo ? "table-warning" : ""}>
+            <td data-label="ID ">{item.ID_Producto}</td>
+            <td data-label="Producto ">{item.Producto}</td>
+            <td data-label="Stock ">
+              <input
+                type="number"
+                className="form-control form-control-sm"
+                value={item.Stock}
+                min="0"
+                onChange={(e) => {
+                  const nuevoInventario = inventario.map((i) =>
+                    i.ID_Inventario === item.ID_Inventario
+                      ? { ...i, Stock: e.target.value }
+                      : i
+                  );
+                  setInventario(nuevoInventario);
+                }}
+              />
+            </td>
+            <td data-label="Mínimo " style={{padding: '10px 8px'}}>{item.Stock_Minimo}</td>
+            <td data-label="Acciones " style={{padding: '10px 8px'}}>
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={() => actualizarStock(item.ID_Inventario, item.Stock)}
+              >
+                Actualizar
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
     </>
   );
 };

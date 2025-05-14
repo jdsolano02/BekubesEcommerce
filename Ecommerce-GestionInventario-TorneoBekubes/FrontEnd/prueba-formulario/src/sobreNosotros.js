@@ -397,7 +397,7 @@ const SobreNosotros = () => {
       </Container>
 
       {/* Llamado a la Acción */}
-      <div className="cta-section text-center py-5">
+      <div className="bg-dark cta-section text-center py-5 ">
         <h2>¿Listo para resolver el siguiente desafío?</h2>
         <p>
           Explora nuestra colección de cubos Rubik y encuentra el perfecto para

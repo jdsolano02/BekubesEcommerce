@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import "./StyleGestionP.css"; 
+
 
 const GestionProductos = () => {
   const [productos, setProductos] = useState([]);
@@ -299,11 +301,21 @@ const convertirImagenABase64 = async (imagen) => {
                   </button>
                 </li>
                 <li className="nav-item">
-                <button className="nav-link btn btn-link" onClick={() => navigate("/pedidos-admin")}>Pedido Usuarios</button>
-              </li>
-              <li className="nav-item">
-                <button className="nav-link btn btn-link" onClick={() => navigate("/admin-torneo")}>Torneos</button>
-              </li>
+                  <button
+                    className="nav-link btn btn-link"
+                    onClick={() => navigate("/pedidos-admin")}
+                  >
+                    Pedido Usuarios
+                  </button>
+                </li>
+                <li className="nav-item">
+                  <button
+                    className="nav-link btn btn-link"
+                    onClick={() => navigate("/admin-torneo")}
+                  >
+                    Torneos
+                  </button>
+                </li>
               </ul>
               <span className="navbar-text text-white me-3">
                 Bienvenido, {adminEmail}
@@ -318,160 +330,289 @@ const convertirImagenABase64 = async (imagen) => {
 
       <div className="container">
         <h1 className="text-center my-4">Gestión de Productos</h1>
-        <form onSubmit={guardarProducto}>
-          <div className="mb-3">
-            <label className="form-label">Nombre</label>
-            <input
-              type="text"
-              className="form-control"
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Descripción</label>
-            <textarea
-              className="form-control"
-              value={descripcion}
-              onChange={(e) => setDescripcion(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Precio</label>
-            <input
-              type="number"
-              className="form-control"
-              value={precio}
-              onChange={(e) => setPrecio(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Stock</label>
-            <input
-              type="number"
-              className="form-control"
-              value={stock}
-              onChange={(e) => setStock(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Tipo</label>
-            <input
-              type="text"
-              className="form-control"
-              value={tipo}
-              onChange={(e) => setTipo(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Dificultad</label>
-            <input
-              type="text"
-              className="form-control"
-              value={dificultad}
-              onChange={(e) => setDificultad(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Imagen</label>
-            {editarId && ( // Mostrar la imagen actual solo en modo edición
-              <div>
-                <img
-                  src={`http://localhost//Ecommerce-GestionInventario-TorneoBekubes/BackEnd/${imagen}`} // URL completa de la imagen
-                  alt="Imagen actual"
-                  style={{
-                    width: "200px",
-                    height: "200px",
-                    marginBottom: "10px",
-                  }}
-                />
-              </div>
-            )}
-            <input
-              type="file"
-              className="form-control"
-              onChange={(e) => setImagen(e.target.files[0])} // Manejar la selección de la imagen
-              accept="image/*" // Aceptar solo archivos de imagen
-            />
-          </div>
-          <button type="submit" className="btn btn-primary">
-            {editarId ? "Actualizar Producto" : "Agregar Producto"}
-          </button>
-        </form>
-
-        <h2 className="my-4">Lista de Productos</h2>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Descripción</th>
-              <th>Precio</th>
-              <th>Stock</th>
-              <th>Imagen</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {productos.map((producto) => (
-              <tr key={producto.ID_Producto}>
-                <td>{producto.Nombre}</td>
-                <td>{producto.Descripcion}</td>
-                <td>₡{producto.Precio.toFixed(2)}</td>
-                <td>{producto.Stock}</td>
-                <td>
-                  {producto.Imagen && (
-                    <img
-                      src={`data:image/jpeg;base64,${producto.Imagen}`} // Mostrar la imagen en base64
-                      alt={producto.Nombre}
-                      style={{ width: "50px", height: "50px" }}
+        {/* Formulario responsive */}
+        <div className="row justify-content-center">
+          <div className="col-lg-6 mb-4">
+            <div className="card">
+              <div className="card-body">
+                <h2 className="card-title h5">
+                  {editarId ? "Editar Producto" : "Agregar Producto"}
+                </h2>
+                <form onSubmit={guardarProducto}>
+                  <div className="mb-3">
+                    <label className="form-label">Nombre</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={nombre}
+                      onChange={(e) => setNombre(e.target.value)}
+                      required
                     />
-                  )}
-                </td>
-                <td>
-                  {producto.Estado === 0 ? "Habilitado" : "Deshabilitado"}
-                </td>
-                <td>
-                  <button
-                    className="btn btn-warning me-2"
-                    onClick={() => {
-                      setNombre(producto.Nombre);
-                      setDescripcion(producto.Descripcion);
-                      setPrecio(producto.Precio);
-                      setStock(producto.Stock);
-                      setTipo(producto.Tipo);
-                      setDificultad(producto.Dificultad);
-                      setImagen(producto.Imagen); // Usar el base64 de la imagen
-                      setEditarId(producto.ID_Producto);
-                    }}
-                  >
-                    Editar
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Descripción</label>
+                    <textarea
+                      className="form-control"
+                      value={descripcion}
+                      onChange={(e) => setDescripcion(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Precio en USD</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      value={precio}
+                      onChange={(e) => setPrecio(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Stock</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      value={stock}
+                      onChange={(e) => setStock(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Tipo</label>
+                    <select
+                      className="form-control"
+                      value={tipo}
+                      onChange={(e) => setTipo(e.target.value)}
+                      required
+                    >
+                      <option value="">Seleccione un tipo</option>
+                      <option value="2x2">2x2</option>
+                      <option value="3x3">3x3</option>
+                      <option value="4x4">4x4</option>
+                      <option value="6x6">6x6</option>
+                    </select>
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Dificultad</label>
+                    <select
+                      className="form-control"
+                      value={dificultad}
+                      onChange={(e) => setDificultad(e.target.value)}
+                      required
+                    >
+                      <option value="">Seleccione dificultad</option>
+                      <option value="Básico">Básico</option>
+                      <option value="Intermedio">Intermedio</option>
+                      <option value="Avanzado">Avanzado</option>
+                    </select>
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Imagen</label>
+                    {editarId && ( // Mostrar la imagen actual solo en modo edición
+                      <div>
+                        <img
+                          src={`http://localhost//Ecommerce-GestionInventario-TorneoBekubes/BackEnd/${imagen}`} // URL completa de la imagen
+                          alt="Imagen actual"
+                          style={{
+                            width: "200px",
+                            height: "200px",
+                            marginBottom: "10px",
+                          }}
+                        />
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      className="form-control"
+                      onChange={(e) => setImagen(e.target.files[0])} // Manejar la selección de la imagen
+                      accept="image/*" // Aceptar solo archivos de imagen
+                    />
+                  </div>
+                  <button type="submit" className="btn btn-primary">
+                    {editarId ? "Actualizar Producto" : "Agregar Producto"}
                   </button>
-                  {producto.Estado === 0 ? (
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => eliminarProducto(producto.ID_Producto)}
-                    >
-                      Deshabilitar
-                    </button>
-                  ) : (
-                    <button
-                      className="btn btn-success"
-                      onClick={() => habilitarProducto(producto.ID_Producto)}
-                    >
-                      Habilitar
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          {/* Lista de productos */}
+          <div className="col-lg-12">
+            <h2 className="my-4">Lista de Productos</h2>
+
+            {/* Versión para móviles */}
+            <div className="d-md-none">
+              {productos.map((producto) => (
+                <div key={producto.ID_Producto} className="card mb-3">
+                  <div className="row g-0">
+                    {producto.Imagen && (
+                      <div className="col-4">
+                        <img
+                          src={`data:image/jpeg;base64,${producto.Imagen}`}
+                          className="img-fluid rounded-start"
+                          alt={producto.Nombre}
+                        />
+                      </div>
+                    )}
+                    <div className={producto.Imagen ? "col-8" : "col-12"}>
+                      <div className="card-body">
+                        <h5 className="card-title">{producto.Nombre}</h5>
+                        <p className="card-text text-truncate">
+                          {producto.Descripcion}
+                        </p>
+                        <div className="d-flex justify-content-between">
+                          <span>${producto.Precio.toFixed(2)}</span>
+                          <span>Stock: {producto.Stock}</span>
+                        </div>
+                        <div className="d-flex justify-content-between mt-2">
+                          <span
+                            className={`badge ${
+                              producto.Estado === 0 ? "bg-success" : "bg-danger"
+                            }`}
+                          >
+                            {producto.Estado === 0
+                              ? "Habilitado"
+                              : "Deshabilitado"}
+                          </span>
+                          <div>
+                            <button
+                              className="btn btn-sm btn-warning me-2"
+                              onClick={() => {
+                                setNombre(producto.Nombre);
+                                setDescripcion(producto.Descripcion);
+                                setPrecio(producto.Precio);
+                                setStock(producto.Stock);
+                                setTipo(producto.Tipo);
+                                setDificultad(producto.Dificultad);
+                                setImagen(producto.Imagen);
+                                setEditarId(producto.ID_Producto);
+                              }}
+                            >
+                              <i className="bi bi-pencil"></i>
+                            </button>
+                            {producto.Estado === 0 ? (
+                              <button
+                                className="btn btn-sm btn-danger"
+                                onClick={() =>
+                                  eliminarProducto(producto.ID_Producto)
+                                }
+                              >
+                                <i className="bi bi-x-circle"></i>
+                              </button>
+                            ) : (
+                              <button
+                                className="btn btn-sm btn-success"
+                                onClick={() =>
+                                  habilitarProducto(producto.ID_Producto)
+                                }
+                              >
+                                <i className="bi bi-check-circle"></i>
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Versión para desktop */}
+            <div className="d-none d-md-block">
+              <div className="table-responsive">
+                <table className="table table-striped table-hover">
+                  <thead className="table-dark">
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Descripción</th>
+                      <th>Precio</th>
+                      <th>Stock</th>
+                      <th>Imagen</th>
+                      <th>Estado</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {productos.map((producto) => (
+                      <tr key={producto.ID_Producto}>
+                        <td>{producto.Nombre}</td>
+                        <td
+                          className="text-truncate"
+                          style={{ maxWidth: "200px" }}
+                        >
+                          {producto.Descripcion}
+                        </td>
+                        <td>${producto.Precio.toFixed(2)}</td>
+                        <td>{producto.Stock}</td>
+                        <td>
+                          {producto.Imagen && (
+                            <img
+                              src={`data:image/jpeg;base64,${producto.Imagen}`}
+                              alt={producto.Nombre}
+                              className="img-thumbnail"
+                              style={{ width: "50px", height: "50px" }}
+                            />
+                          )}
+                        </td>
+                        <td>
+                          <span
+                            className={`badge ${
+                              producto.Estado === 0 ? "bg-success" : "bg-danger"
+                            }`}
+                          >
+                            {producto.Estado === 0
+                              ? "Habilitado"
+                              : "Deshabilitado"}
+                          </span>
+                        </td>
+                        <td>
+                          <div className="btn-group btn-group-sm">
+                            <button
+                              className="btn btn-warning"
+                              onClick={() => {
+                                setNombre(producto.Nombre);
+                                setDescripcion(producto.Descripcion);
+                                setPrecio(producto.Precio);
+                                setStock(producto.Stock);
+                                setTipo(producto.Tipo);
+                                setDificultad(producto.Dificultad);
+                                setImagen(producto.Imagen);
+                                setEditarId(producto.ID_Producto);
+                              }}
+                            >
+                              Editar
+                            </button>
+                            {producto.Estado === 0 ? (
+                              <button
+                                className="btn btn-danger"
+                                onClick={() =>
+                                  eliminarProducto(producto.ID_Producto)
+                                }
+                              >
+                                Deshab.
+                              </button>
+                            ) : (
+                              <button
+                                className="btn btn-success"
+                                onClick={() =>
+                                  habilitarProducto(producto.ID_Producto)
+                                }
+                              >
+                                Habilitar
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );

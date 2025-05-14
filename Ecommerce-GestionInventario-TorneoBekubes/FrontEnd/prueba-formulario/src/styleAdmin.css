@@ -50,3 +50,10 @@ body {
     font-size: 1rem;
     color: #666;
 }
+@media (max-width: 768px) {
+
+}
+
+td[data-label]::before {
+  margin-right: 10px; 
+}

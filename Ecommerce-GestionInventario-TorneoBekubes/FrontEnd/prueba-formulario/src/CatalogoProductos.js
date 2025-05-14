@@ -159,58 +159,70 @@ const CatalogoProductos = () => {
   return (
     <div>
       {/* Navbar */}
-      <Navbar bg="dark" expand="lg" className="fixed-top shadow-sm">
-        <Container style={{ background: "#fff" }}>
-          <Navbar.Brand href="/client-home" className="fw-bold">
-            Bekubes
-            <img
-              width={50}
-              height={50}
-              src="http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/uploads/Captura%20de%20pantalla%202025-02-17%20224603.png"
-              alt="logo"
-              className="img-fluid"
-            />
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav  className="ms-auto d-flex flex-nowrap" style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
-              <Nav.Link href="/catalogo-productos" className="mx-2">
-                Catalogo de Productos
-              </Nav.Link>
-              <Nav.Link href="/carrito" className="mx-2">
-            Carrito (
-            <span style={{ color: "red", fontWeight: "bold" }}>{cantidadCarrito}</span>)
-          </Nav.Link>
-              <Nav.Link href="/pedido" className="mx-2">
-              Mis Pedidos
-              </Nav.Link>
-              <Nav.Link href="/sobre-nosotros" className="mx-2">
-                Sobre Nosotros
-              </Nav.Link>
-                            <Nav.Link href="/client-torneo" className="mx-2">
-                              Torneos
-                            </Nav.Link>
-            </Nav>
-            <Nav>
-              <NavDropdown
-                title={
-                  <span className="text-dark">
-                    Bienvenido, {localStorage.getItem("email")}
-                  </span>
-                }
-                id="basic-nav-dropdown"
-              >
-                <NavDropdown.Item onClick={handleLogout}>
-                  Cerrar sesión
-                </NavDropdown.Item>
-              </NavDropdown>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+            <Navbar bg="dark" expand="lg" className="fixed-top shadow-sm" style={{ minHeight: "100px" }}>
+                    <Container fluid="md" style={{ background: "#fff", borderRadius: "10px"}}>
+                      <Navbar.Brand
+                        href="/client-home"
+                        className="fw-bold d-flex align-items-center"
+                      >
+                        Bekubes
+                        <img
+                          width={50}
+                          height={50}
+                          src="http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/uploads/Captura%20de%20pantalla%202025-02-17%20224603.png"
+                          alt="logo"
+                          className="img-fluid ms-2"
+                        />
+                      </Navbar.Brand>
+                      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                      <Navbar.Collapse id="basic-navbar-nav">
+                        <Nav className="ms-auto flex-column flex-lg-row">
+                          <Nav.Link
+                            href="/catalogo-productos"
+                            className="mx-lg-2 my-1 my-lg-0"
+                          >
+                            Catalogo de Productos
+                          </Nav.Link>
+                          <Nav.Link href="/carrito" className="mx-lg-2 my-1 my-lg-0">
+                            Carrito (
+                            <span style={{ color: "red", fontWeight: "bold" }}>
+                              {cantidadCarrito}
+                            </span>
+                            )
+                          </Nav.Link>
+                          <Nav.Link href="/pedido" className="mx-lg-2 my-1 my-lg-0">
+                            Mis Pedidos
+                          </Nav.Link>
+                          <Nav.Link href="/sobre-nosotros" className="mx-lg-2 my-1 my-lg-0">
+                            Sobre Nosotros
+                          </Nav.Link>
+                          <Nav.Link href="/client-torneo" className="mx-lg-2 my-1 my-lg-0">
+                            Torneos
+                          </Nav.Link>
+                        </Nav>
+                        <Nav>
+                          <NavDropdown
+                            title={
+                              <span className="text-dark">
+                                Bienvenido, {localStorage.getItem("email")}
+                              </span>
+                            }
+                            id="basic-nav-dropdown"
+                            align="end"
+                          >
+                            <NavDropdown.Item
+                              onClick={handleLogout} style={{color :"red"}}
+                            >
+                              Cerrar sesión
+                            </NavDropdown.Item>
+                          </NavDropdown>
+                        </Nav>
+                      </Navbar.Collapse>
+                    </Container>
+                  </Navbar>
 
       {/* Contenido Principal */}
-      <div style={{ paddingTop: "200px" }}>
+      <div style={{ paddingTop: "100px" }}>
         <Container>
           <h1 className="text-center my-4">Catálogo de Productos</h1>
 
@@ -273,8 +285,7 @@ const CatalogoProductos = () => {
                 <div className="card">
                   {/* Mostrar la imagen */}
                   <img
-                    src={`data:image/jpeg;base64,${producto.Imagen}`} // Si usas Base64
-                    // src={producto.Imagen} // Si usas URLs de archivos
+                    src={`data:image/jpeg;base64,${producto.Imagen}`} 
                     className="card-img-top"
                     alt={producto.Nombre}
                     style={{ height: "300px", objectFit: "cover" }}
@@ -323,10 +334,16 @@ const CatalogoProductos = () => {
                 <strong>Descripción:</strong> {selectedProduct.Descripcion}
               </p>
               <p>
-                <strong>Precio:</strong> ₡{selectedProduct.Precio.toFixed(2)}
+                <strong>Precio:</strong> ${selectedProduct.Precio.toFixed(2)}
               </p>
               <p>
                 <strong>Stock:</strong> {selectedProduct.Stock}
+              </p>
+              <p>
+                <strong>Tipo:</strong> {selectedProduct.Tipo}
+              </p>
+              <p>
+                <strong>Dificultad:</strong> {selectedProduct.Dificultad}
               </p>
             </>
           )}
@@ -339,58 +356,50 @@ const CatalogoProductos = () => {
       </Modal>
 
       {/* Footer */}
-      <footer
-        style={{
-          background: "#696969",
-          color: "#fff",
-          padding: "15px 0",
-          height: "300px",
-        }}
-      >
-        <Container style={{ width: "1000px", height: "200px" }}>
-          <Row>
-            <div
-              style={{
-                background: "#696969",
-                color: "#fff",
-                padding: "20px 0",
-                textAlign: "center",
-              }}
+       <footer
+              className="bg-dark text-white py-3"
+              style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
             >
-              <p className="mb-0">
-                &copy; 2025 Bekubes. Todos los derechos reservados.
-              </p>
-            </div>
-            <Col md={4}>
-              <h5>Redes Sociales</h5>
-              <ul className="list-unstyled">
-                <li>
-                  <a
-                    href="https://www.facebook.com/Bekubes"
-                    className="text-dark"
-                  >
-                    <FaFacebook /> Facebook
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.instagram.com/bekubes/"
-                    className="text-dark"
-                  >
-                    <FaInstagram /> Instagram
-                  </a>
-                </li>
-                <li>
-                  <a href="https://web.whatsapp.com/" className="text-dark">
-                    <FaWhatsapp />
-                    Whatsapp
-                  </a>
-                </li>
-              </ul>
-            </Col>
-          </Row>
-        </Container>
-      </footer>
+              <Container>
+                <Row className="align-items-center">
+                  <Col className="text-center">
+                    <div className="d-flex justify-content-center gap-4 mb-2">
+                      <a
+                        href="https://www.facebook.com/Bekubes"
+                        className="text-black"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Facebook"
+                      >
+                        <FaFacebook size={20} />
+                      </a>
+                      <a
+                        href="https://www.instagram.com/bekubes/"
+                        className="text-black"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Instagram"
+                      >
+                        <FaInstagram size={20} />
+                      </a>
+                      <a
+                        href="https://web.whatsapp.com/"
+                        className="text-black"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="WhatsApp"
+                      >
+                        <FaWhatsapp size={20} />
+                      </a>
+                    </div>
+                    <p className="small mb-0" style={{ color: "rgba(0, 0, 0, 0.7)" }}>
+                      &copy; {new Date().getFullYear()} Bekubes. Todos los derechos
+                      reservados.
+                    </p>
+                  </Col>
+                </Row>
+              </Container>
+            </footer>
     </div>
   );
 };

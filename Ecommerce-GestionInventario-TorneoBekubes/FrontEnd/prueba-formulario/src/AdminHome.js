@@ -1,7 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./styleAdmin.css"; // Importa el archivo CSS
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "./styleAdmin.css"; 
 
 
 const AdminHome = () => {

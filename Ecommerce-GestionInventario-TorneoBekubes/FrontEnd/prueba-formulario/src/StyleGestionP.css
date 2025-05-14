@@ -1,0 +1,75 @@
+/* Estilos generales */
+.card {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+/* Estilos para móviles */
+@media (max-width: 767.98px) {
+  .form-label {
+    font-weight: bold;
+  }
+  
+  .card-body {
+    padding: 1rem;
+  }
+  
+  .img-thumbnail {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  
+  .btn-group-sm > .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  /* Ajustes para la vista de cards */
+  .card-text {
+    font-size: 0.875rem;
+  }
+  
+  .badge {
+    font-size: 0.75rem;
+  }
+  
+  /* Ajustes para el formulario */
+  .form-control {
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Ocultar elementos no esenciales en móviles */
+  .d-none-on-mobile {
+    display: none !important;
+  }
+}
+
+/* Estilos para desktop */
+@media (min-width: 992px) {
+  .centered-form {
+    max-width: 700px; /* o el ancho que prefieras */
+    margin: 0 auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: 8px;
+  }
+  .centered-form .card-body {
+    padding: 2rem;
+  }
+
+  
+  .table {
+    margin-bottom: 0;
+  }
+  
+  .table th {
+    white-space: nowrap;
+  }
+  
+  .table td {
+    vertical-align: middle;
+  }
+}

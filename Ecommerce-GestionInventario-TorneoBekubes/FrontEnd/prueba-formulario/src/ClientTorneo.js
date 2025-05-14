@@ -49,18 +49,27 @@ const ClienteTorneos = () => {
   // Obtener mis inscripciones
   const fetchMisInscripciones = async () => {
     const usuario = getUsuario();
-    if (!usuario) return;
-
+    if (!usuario) {
+      setMisInscripciones([]);
+      return;
+    }
+  
     try {
-      const response = await axios.get(
+      const { data } = await axios.get(
         `http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/inscripciones.php?usuario_id=${usuario.id}`
       );
-      setMisInscripciones(response.data);
+      
+      if (data.success && Array.isArray(data.data)) {
+        setMisInscripciones(data.data);
+      } else {
+        throw new Error('Formato de respuesta inválido');
+      }
     } catch (error) {
-      console.error('Error al obtener inscripciones:', error);
+      console.error('Error:', error);
+      setMisInscripciones([]);
+      Swal.fire('Error', 'Error al cargar inscripciones', 'error');
     }
   };
-
   // Inscribirse a un torneo
   const handleInscripcion = async (torneoId) => {
     const usuario = getUsuario();
@@ -87,37 +96,37 @@ const ClienteTorneos = () => {
   };
 
   // Cancelar inscripción
-  const handleCancelarInscripcion = async (inscripcionId) => {
-    const usuario = getUsuario();
-    if (!usuario) return;
-
-    try {
-      const result = await Swal.fire({
-        title: '¿Cancelar inscripción?',
-        text: "¿Estás seguro de que deseas cancelar tu inscripción?",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Sí, cancelar',
-        cancelButtonText: 'No, mantener'
-      });
-
-      if (result.isConfirmed) {
+  const handleCancelarInscripcion = async (inscripcion) => {
+    if (inscripcion.torneo_estado === 0) {
+      Swal.fire('Error', 'No se puede cancelar la inscripción porque el torneo fue cancelado', 'error');
+      return;
+    }
+  
+    const result = await Swal.fire({
+      title: '¿Cancelar inscripción?',
+      text: "Esta acción no se puede deshacer",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, cancelar',
+      cancelButtonText: 'No, mantener'
+    });
+  
+    if (result.isConfirmed) {
+      try {
         await axios.put(
           'http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/inscripciones.php',
           {
-            inscripcion_id: inscripcionId,
-            usuario_id: usuario.id
+            inscripcion_id: inscripcion.ID_Inscripcion,
+            usuario_id: getUsuario().id
           }
         );
-
+        fetchMisInscripciones();
         Swal.fire('Cancelada', 'Tu inscripción ha sido cancelada', 'success');
-        fetchMisInscripciones(); // Actualizar lista
+      } catch (error) {
+        Swal.fire('Error', error.response?.data?.error || 'Error al cancelar', 'error');
       }
-    } catch (error) {
-      console.error('Error al cancelar inscripción:', error);
-      Swal.fire('Error', error.response?.data?.error || 'Error al cancelar', 'error');
     }
   };
 
@@ -135,63 +144,69 @@ const ClienteTorneos = () => {
   return (
     <>
       {/* Navbar */}
-      <Navbar bg="dark" expand="lg" className="fixed-top shadow-sm">
-        <Container style={{ background: "#fff" }}>
-          <Navbar.Brand href="/client-home" className="fw-bold">
-            Bekubes
-            <img
-              width={50}
-              height={50}
-              src="http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/uploads/Captura%20de%20pantalla%202025-02-17%20224603.png"
-              alt="logo"
-              className="img-fluid"
-            />
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav
-              Nav
-              className="ms-auto d-flex flex-nowrap"
-              style={{ overflowX: "auto", whiteSpace: "nowrap" }}
-            >
-              <Nav.Link href="/catalogo-productos" className="mx-2">
-                Catalogo de Productos
-              </Nav.Link>
-              <Nav.Link href="/carrito" className="mx-2">
-                Carrito (
-                <span style={{ color: "red", fontWeight: "bold" }}>
-                  {cantidadCarrito}
-                </span>
-                )
-              </Nav.Link>
-              <Nav.Link href="/pedido" className="mx-2">
-                Mis Pedidos
-              </Nav.Link>
-              <Nav.Link href="/sobre-nosotros" className="mx-2">
-                Sobre Nosotros
-              </Nav.Link>
-              <Nav.Link href="/client-torneo" className="mx-2">
-                Torneos
-              </Nav.Link>
-            </Nav>
-            <Nav>
-              <NavDropdown
-                title={
-                  <span className="text-dark">
-                    Bienvenido, {localStorage.getItem("email")}
-                  </span>
-                }
-                id="basic-nav-dropdown"
-              >
-                <NavDropdown.Item onClick={handleLogout}>
-                  Cerrar sesión
-                </NavDropdown.Item>
-              </NavDropdown>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-      <Container style={{ marginTop: "15rem" }}>
+      <Navbar bg="dark" expand="lg" className="fixed-top shadow-sm" style={{ minHeight: "100px" }}>
+              <Container fluid="md" style={{ background: "#fff", borderRadius: "10px"}}>
+                <Navbar.Brand
+                  href="/client-home"
+                  className="fw-bold d-flex align-items-center"
+                >
+                  Bekubes
+                  <img
+                    width={50}
+                    height={50}
+                    src="http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/uploads/Captura%20de%20pantalla%202025-02-17%20224603.png"
+                    alt="logo"
+                    className="img-fluid ms-2"
+                  />
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                  <Nav className="ms-auto flex-column flex-lg-row">
+                    <Nav.Link
+                      href="/catalogo-productos"
+                      className="mx-lg-2 my-1 my-lg-0"
+                    >
+                      Catalogo de Productos
+                    </Nav.Link>
+                    <Nav.Link href="/carrito" className="mx-lg-2 my-1 my-lg-0">
+                      Carrito (
+                      <span style={{ color: "red", fontWeight: "bold" }}>
+                        {cantidadCarrito}
+                      </span>
+                      )
+                    </Nav.Link>
+                    <Nav.Link href="/pedido" className="mx-lg-2 my-1 my-lg-0">
+                      Mis Pedidos
+                    </Nav.Link>
+                    <Nav.Link href="/sobre-nosotros" className="mx-lg-2 my-1 my-lg-0">
+                      Sobre Nosotros
+                    </Nav.Link>
+                    <Nav.Link href="/client-torneo" className="mx-lg-2 my-1 my-lg-0">
+                      Torneos
+                    </Nav.Link>
+                  </Nav>
+                  <Nav>
+                    <NavDropdown
+                      title={
+                        <span className="text-dark">
+                          Bienvenido, {localStorage.getItem("email")}
+                        </span>
+                      }
+                      id="basic-nav-dropdown"
+                      align="end"
+                    >
+                      <NavDropdown.Item
+                        onClick={handleLogout} style={{color :"red"}}
+                      >
+                        Cerrar sesión
+                      </NavDropdown.Item>
+                    </NavDropdown>
+                  </Nav>
+                </Navbar.Collapse>
+              </Container>
+            </Navbar>
+
+      <Container style={{ marginTop: "10rem" }}>
         <h2 className="mb-4">Torneos Disponibles</h2>
 
         <Row className="g-4 mb-5">
@@ -253,88 +268,79 @@ const ClienteTorneos = () => {
 
         <h2 className="mb-4">Mis Inscripciones</h2>
         {getUsuario() ? (
-          <Table striped bordered hover responsive className="mt-3">
-            <thead className="table-dark">
-              <tr>
-                <th>Torneo</th>
-                <th>Fecha</th>
-                <th>Ubicación</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {misInscripciones.length > 0 ? (
-                misInscripciones.map((inscripcion) => {
-                  const fechaTorneo = new Date(inscripcion.Fecha);
-                  const hoy = new Date();
-                  const torneoConcluido = fechaTorneo < hoy;
-                  const torneoCancelado = inscripcion.torneo_estado === 0; // Asumiendo que torneo_estado viene en los datos
-
-                  return (
-                    <tr key={inscripcion.ID_Inscripcion}>
-                      <td>
-                        {inscripcion.torneo_nombre}
-                        {torneoCancelado && (
-                          <span className="badge bg-danger ms-2">
-                            Cancelado
-                          </span>
-                        )}
-                      </td>
-                      <td>
-                        {fechaTorneo.toLocaleDateString()}
-                        {torneoConcluido && !torneoCancelado && (
-                          <span className="badge bg-secondary ms-2">
-                            Finalizado
-                          </span>
-                        )}
-                      </td>
-                      <td>{inscripcion.Ubicacion}</td>
-                      <td>
-                        <span
-                          className={`badge ${
-                            inscripcion.estado === "confirmada"
-                              ? "bg-success"
-                              : inscripcion.estado === "cancelada"
-                              ? "bg-danger"
-                              : "bg-warning"
-                          }`}
-                        >
-                          {inscripcion.estado}
-                        </span>
-                      </td>
-                      <td>
-                        {inscripcion.estado === "confirmada" && (
-                          <Button
-                            variant="outline-danger"
-                            size="sm"
-                            onClick={() =>
-                              handleCancelarInscripcion(
-                                inscripcion.ID_Inscripcion
-                              )
-                            }
-                            disabled={torneoConcluido || torneoCancelado}
-                          >
-                            {torneoCancelado
-                              ? "Torneo cancelado"
-                              : torneoConcluido
-                              ? "No cancelable"
-                              : "Cancelar"}
-                          </Button>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td colSpan="5" className="text-center py-4">
-                    No tienes inscripciones activas
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </Table>
+         <Table striped bordered hover responsive className="mt-3">
+         <thead className="table-dark">
+           <tr>
+             <th>Torneo</th>
+             <th>Fecha</th>
+             <th>Ubicación</th>
+             <th>Estado Inscripción</th>
+             <th>Acciones</th>
+           </tr>
+         </thead>
+         <tbody>
+           {misInscripciones.length > 0 ? (
+             (() => {
+               const inscripcionesActivas = misInscripciones.filter(inscripcion => inscripcion.torneo_estado !== 0);
+               
+               if (inscripcionesActivas.length === 0) {
+                 return (
+                   <tr>
+                     <td colSpan="5" className="text-center py-4 fw-bold">
+                       No tienes inscripciones activas
+                     </td>
+                   </tr>
+                 );
+               }
+       
+               return inscripcionesActivas.map((inscripcion) => {
+                 const fechaTorneo = new Date(inscripcion.Fecha);
+                 const hoy = new Date();
+                 const torneoConcluido = fechaTorneo < hoy;
+       
+                 return (
+                   <tr key={inscripcion.ID_Inscripcion}>
+                     <td>{inscripcion.torneo_nombre}</td>
+                     <td>
+                       {fechaTorneo.toLocaleDateString()}
+                       {torneoConcluido && (
+                         <span className="badge bg-secondary ms-2">Finalizado</span>
+                       )}
+                     </td>
+                     <td>{inscripcion.Ubicacion}</td>
+                     <td>
+                       <span className={`badge ${
+                         inscripcion.estado === "confirmada" ? "bg-success" :
+                         inscripcion.estado === "cancelada" ? "bg-danger" : "bg-warning"
+                       }`}>
+                         {inscripcion.estado}
+                       </span>
+                     </td>
+                     <td>
+                       {inscripcion.estado === "confirmada" && (
+                         <Button
+                           variant="outline-danger"
+                           size="sm"
+                           onClick={() => handleCancelarInscripcion(inscripcion)}
+                           disabled={torneoConcluido}
+                         >
+                           {torneoConcluido ? "Finalizado" : "Cancelar inscripción"}
+                         </Button>
+                       )}
+                     </td>
+                   </tr>
+                 );
+               });
+             })()
+           ) : (
+             <tr>
+               <td colSpan="5" className="text-center py-4 fw-bold">
+                 No tienes inscripciones activas
+               </td>
+             </tr>
+           )}
+         </tbody>
+       </Table>
         ) : (
           <Alert variant="info">Inicia sesión para ver tus inscripciones</Alert>
         )}
@@ -342,57 +348,49 @@ const ClienteTorneos = () => {
 
       {/* Footer */}
       <footer
-        style={{
-          background: "#696969",
-          color: "#fff",
-          padding: "15px 0",
-          minHeight: "300px",
-        }}
-      >
-        <Container style={{ width: "1000px", height: "200px" }}>
-          <Row>
-            <div
-              style={{
-                background: "#696969",
-                color: "#fff",
-                padding: "20px 0",
-                textAlign: "center",
-              }}
+              className="bg-dark text-white py-3"
+              style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
             >
-              <p className="mb-0">
-                &copy; 2025 Bekubes. Todos los derechos reservados.
-              </p>
-            </div>
-            <Col md={4}>
-              <h5>Redes Sociales</h5>
-              <ul className="list-unstyled">
-                <li>
-                  <a
-                    href="https://www.facebook.com/Bekubes"
-                    className="text-dark"
-                  >
-                    <FaFacebook /> Facebook
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.instagram.com/bekubes/"
-                    className="text-dark"
-                  >
-                    <FaInstagram /> Instagram
-                  </a>
-                </li>
-                <li>
-                  <a href="https://web.whatsapp.com/" className="text-dark">
-                    <FaWhatsapp />
-                    Whatsapp
-                  </a>
-                </li>
-              </ul>
-            </Col>
-          </Row>
-        </Container>
-      </footer>
+              <Container>
+                <Row className="align-items-center">
+                  <Col className="text-center">
+                    <div className="d-flex justify-content-center gap-4 mb-2">
+                      <a
+                        href="https://www.facebook.com/Bekubes"
+                        className="text-black"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Facebook"
+                      >
+                        <FaFacebook size={20} />
+                      </a>
+                      <a
+                        href="https://www.instagram.com/bekubes/"
+                        className="text-black"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Instagram"
+                      >
+                        <FaInstagram size={20} />
+                      </a>
+                      <a
+                        href="https://web.whatsapp.com/"
+                        className="text-black"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="WhatsApp"
+                      >
+                        <FaWhatsapp size={20} />
+                      </a>
+                    </div>
+                    <p className="small mb-0" style={{ color: "rgba(0, 0, 0, 0.7)" }}>
+                      &copy; {new Date().getFullYear()} Bekubes. Todos los derechos
+                      reservados.
+                    </p>
+                  </Col>
+                </Row>
+              </Container>
+            </footer>
     </>
   );
 };

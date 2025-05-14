@@ -31,15 +31,29 @@ switch ($method) {
             }
 
             $stmt = $conn->prepare("
-                SELECT i.*, t.Nombre as torneo_nombre, t.Fecha, t.Ubicacion 
+                SELECT 
+                    i.*, 
+                    t.Nombre as torneo_nombre, 
+                    t.Fecha, 
+                    t.Ubicacion,
+                    t.Estado as torneo_estado,
+                    CASE 
+                        WHEN t.Estado = 0 THEN 'Cancelado'
+                        WHEN t.Fecha < CURDATE() THEN 'Finalizado'
+                        ELSE 'Activo'
+                    END as estado_torneo
                 FROM Inscripciones i
                 JOIN Torneos t ON i.torneo_id = t.ID_Torneo
                 WHERE i.usuario_id = ?
+                ORDER BY t.Fecha DESC
             ");
             $stmt->execute([$usuario_id]);
             $inscripciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
-            echo json_encode($inscripciones);
+            echo json_encode([
+                'success' => true,
+                'data' => $inscripciones
+            ]);
         } else {
             http_response_code(400);
             echo json_encode(['error' => 'Se requiere usuario_id']);
@@ -58,17 +72,26 @@ switch ($method) {
         $torneo_id = $input['torneo_id'];
 
         try {
-            // Verificar si el torneo existe
-            $stmt = $conn->prepare("SELECT ID_Torneo FROM Torneos WHERE ID_Torneo = ?");
+            // Verificar si el torneo existe y está activo
+            $stmt = $conn->prepare("
+                SELECT ID_Torneo, Estado 
+                FROM Torneos 
+                WHERE ID_Torneo = ? AND Estado = 1
+            ");
             $stmt->execute([$torneo_id]);
+            
             if ($stmt->rowCount() === 0) {
-                http_response_code(404);
-                echo json_encode(['error' => 'El torneo no existe']);
+                http_response_code(400);
+                echo json_encode(['error' => 'El torneo no existe o está cancelado']);
                 exit();
             }
 
             // Verificar si ya está inscrito
-            $stmt = $conn->prepare("SELECT * FROM Inscripciones WHERE usuario_id = ? AND torneo_id = ?");
+            $stmt = $conn->prepare("
+                SELECT * 
+                FROM Inscripciones 
+                WHERE usuario_id = ? AND torneo_id = ?
+            ");
             $stmt->execute([$usuario_id, $torneo_id]);
             
             if ($stmt->rowCount() > 0) {
@@ -81,12 +104,10 @@ switch ($method) {
             $stmt = $conn->prepare("
                 INSERT INTO Inscripciones 
                 (usuario_id, torneo_id, fecha_inscripcion, estado) 
-                VALUES (?, ?, ?, 'confirmada')
+                VALUES (?, ?, NOW(), 'confirmada')
             ");
             
-            $fecha = date('Y-m-d');
-            
-            if ($stmt->execute([$usuario_id, $torneo_id, $fecha])) {
+            if ($stmt->execute([$usuario_id, $torneo_id])) {
                 http_response_code(201);
                 echo json_encode([
                     'success' => true,
@@ -109,7 +130,30 @@ switch ($method) {
         }
 
         try {
-            // Verificar que la inscripción pertenece al usuario
+            // Verificar que la inscripción existe y el torneo está activo
+            $stmt = $conn->prepare("
+                SELECT i.ID_Inscripcion, t.Estado as torneo_estado
+                FROM Inscripciones i
+                JOIN Torneos t ON i.torneo_id = t.ID_Torneo
+                WHERE i.ID_Inscripcion = ? AND i.usuario_id = ?
+            ");
+            $stmt->execute([$input['inscripcion_id'], $input['usuario_id']]);
+            
+            $inscripcion = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$inscripcion) {
+                http_response_code(404);
+                echo json_encode(['error' => 'Inscripción no encontrada o no pertenece al usuario']);
+                exit();
+            }
+            
+            if ($inscripcion['torneo_estado'] == 0) {
+                http_response_code(400);
+                echo json_encode(['error' => 'No se puede cancelar inscripción a un torneo cancelado']);
+                exit();
+            }
+
+            // Actualizar estado de la inscripción
             $stmt = $conn->prepare("
                 UPDATE Inscripciones 
                 SET estado = 'cancelada' 
@@ -118,10 +162,13 @@ switch ($method) {
             
             if ($stmt->execute([$input['inscripcion_id'], $input['usuario_id']])) {
                 if ($stmt->rowCount() > 0) {
-                    echo json_encode(['success' => true, 'message' => 'Inscripción cancelada']);
+                    echo json_encode([
+                        'success' => true, 
+                        'message' => 'Inscripción cancelada'
+                    ]);
                 } else {
-                    http_response_code(404);
-                    echo json_encode(['error' => 'Inscripción no encontrada o no pertenece al usuario']);
+                    http_response_code(500);
+                    echo json_encode(['error' => 'No se pudo actualizar la inscripción']);
                 }
             }
         } catch (PDOException $e) {

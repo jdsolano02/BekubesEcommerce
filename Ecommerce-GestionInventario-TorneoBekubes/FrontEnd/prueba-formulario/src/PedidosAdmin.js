@@ -210,55 +210,109 @@ const PedidosAdmin = () => {
 
       {/* Contenido de la página de pedidos */}
       <div className="container mt-5">
-        <h1>Pedidos</h1>
-        <button 
-            className="btn btn-warning"
-            onClick={enviarResumenesPedidos}
-            disabled={enviandoResumenes}
-          >
-            {enviandoResumenes ? (
-              <>
-                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                Enviando...
-              </>
-            ) : (
-              "Enviar Resúmenes a Clientes"
-            )}
-          </button>
-          <h1> </h1>
-        <select
-          className="form-select mb-3"
-          onChange={(e) => setFiltroEstado(e.target.value)}
-        >
-          <option value="">Todos</option>
-          <option value="Procesando">Procesando</option>
-          <option value="Enviado">Enviado</option>
-          <option value="Entregado">Entregado</option>
-        </select>
+  <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+    <h1 className="mb-3 mb-md-0">Pedidos de Usuarios</h1>
+    <div className="d-flex flex-column flex-md-row gap-2">
+      <button 
+        className="btn btn-warning"
+        onClick={enviarResumenesPedidos}
+        disabled={enviandoResumenes}
+      >
+        {enviandoResumenes ? (
+          <>
+            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Enviando...
+          </>
+        ) : (
+          "Enviar Resúmenes"
+        )}
+      </button>
+      <select
+        className="form-select"
+        onChange={(e) => setFiltroEstado(e.target.value)}
+        value={filtroEstado}
+      >
+        <option value="">Todos los estados</option>
+        <option value="Procesando">Procesando</option>
+        <option value="Enviado">Enviado</option>
+        <option value="Entregado">Entregado</option>
+      </select>
+    </div>
+  </div>
 
-        <table className="table table-bordered">
-          <thead>
-            <tr>
-              <th>ID Pedido</th>
-              <th>Estado</th>
-              <th>Fecha</th>
-              <th>Email del Usuario</th> {/* Nueva columna para el email */}
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pedidosFiltrados.map((pedido) => (
+  {/* Versión para móviles */}
+  <div className="d-md-none">
+    {pedidosFiltrados.length > 0 ? (
+      pedidosFiltrados.map((pedido) => (
+        <div key={pedido.ID_Pedido} className="card mb-3">
+          <div className="card-body">
+            <div className="d-flex justify-content-between">
+              <h5 className="card-title">Pedido #{pedido.ID_Pedido}</h5>
+              <span className={`badge ${
+                pedido.Estado === 'Procesando' ? 'bg-warning text-dark' : 
+                pedido.Estado === 'Enviado' ? 'bg-info text-dark' : 
+                'bg-success'
+              }`}>
+                {pedido.Estado}
+              </span>
+            </div>
+            <p className="card-text mb-1">
+              <strong>Fecha:</strong> {new Date(pedido.Fecha).toLocaleDateString()}
+            </p>
+            <p className="card-text mb-2">
+              <strong>Cliente:</strong> {pedido.Email}
+            </p>
+            <select
+              className="form-select form-select-sm mb-2"
+              onChange={(e) => cambiarEstadoPedido(pedido.ID_Pedido, e.target.value)}
+              value={pedido.Estado}
+            >
+              <option value="Procesando">Procesando</option>
+              <option value="Enviado">Enviado</option>
+              <option value="Entregado">Entregado</option>
+            </select>
+          </div>
+        </div>
+      ))
+    ) : (
+      <div className="alert alert-info">No hay pedidos con el filtro seleccionado</div>
+    )}
+  </div>
+
+  {/* Versión para desktop */}
+  <div className="d-none d-md-block">
+    <div className="table-responsive">
+      <table className="table table-hover table-bordered">
+        <thead className="table-dark">
+          <tr>
+            <th>ID Pedido</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th>Email del Usuario</th>
+            <th>Cambiar Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          {pedidosFiltrados.length > 0 ? (
+            pedidosFiltrados.map((pedido) => (
               <tr key={pedido.ID_Pedido}>
                 <td>{pedido.ID_Pedido}</td>
-                <td>{pedido.Estado}</td>
-                <td>{pedido.Fecha}</td>
-                <td>{pedido.Email}</td> {/* Mostrar el email del usuario */}
+                <td>
+                  <span className={`badge ${
+                    pedido.Estado === 'Procesando' ? 'bg-warning text-dark' : 
+                    pedido.Estado === 'Enviado' ? 'bg-info text-dark' : 
+                    'bg-success'
+                  }`}>
+                    {pedido.Estado}
+                  </span>
+                </td>
+                <td>{new Date(pedido.Fecha).toLocaleDateString()}</td>
+                <td>{pedido.Email}</td>
                 <td>
                   <select
-                    className="form-select"
-                    onChange={(e) =>
-                      cambiarEstadoPedido(pedido.ID_Pedido, e.target.value)
-                    }
+                    className="form-select form-select-sm"
+                    onChange={(e) => cambiarEstadoPedido(pedido.ID_Pedido, e.target.value)}
+                    value={pedido.Estado}
                   >
                     <option value="Procesando">Procesando</option>
                     <option value="Enviado">Enviado</option>
@@ -266,10 +320,19 @@ const PedidosAdmin = () => {
                   </select>
                 </td>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5" className="text-center">
+                No hay pedidos con el filtro seleccionado
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
     </>
   );
 };
