@@ -13,15 +13,22 @@ try {
 
     // Consulta para obtener todos los pedidos sin detalles
     $query = "
-        SELECT 
+       SELECT 
             p.ID_Pedido, 
             p.Estado, 
             p.Fecha, 
-            p.Email
+            p.Email,
+            GROUP_CONCAT(pr.Nombre SEPARATOR ', ') AS Productos
         FROM 
             Pedidos p
+        JOIN 
+            PedidoDetalles pd ON p.ID_Pedido = pd.ID_Pedido
+        JOIN 
+            Productos pr ON pd.ID_Producto = pr.ID_Producto
         WHERE 
             (:estado IS NULL OR p.Estado = :estado)
+        GROUP BY 
+            p.ID_Pedido
     ";
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':estado', $filtroEstado);

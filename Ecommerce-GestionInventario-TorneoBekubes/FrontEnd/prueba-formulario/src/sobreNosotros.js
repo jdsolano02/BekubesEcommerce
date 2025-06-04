@@ -41,23 +41,31 @@ const SobreNosotros = () => {
   }, []);
 
   // Función para verificar horario de atención
-  const verificarHorario = () => {
-    const ahora = new Date();
-    const horaActual = ahora.getHours();
-    const minutosActuales = ahora.getMinutes();
-    const horaApertura = 9;
-    const horaCierre = 18;
+const verificarHorario = () => {
+  const ahora = new Date();
+  const diaSemana = ahora.getDay(); // 0 (Domingo) a 6 (Sábado)
+  const horaActual = ahora.getHours();
+  const minutosActuales = ahora.getMinutes();
+  const horaApertura = 9;
+  const horaCierre = 18;
 
-    if (horaActual > horaApertura && horaActual < horaCierre) {
-      setEstaAbierto("Sí");
-    } else if (horaActual === horaApertura && minutosActuales >= 0) {
-      setEstaAbierto("Sí");
-    } else if (horaActual === horaCierre && minutosActuales === 0) {
-      setEstaAbierto("Sí");
-    } else {
-      setEstaAbierto("No");
-    }
-  };
+  // Verificar si es fin de semana (Sábado o Domingo)
+  if (diaSemana === 0 || diaSemana === 6) {
+    setEstaAbierto("No");
+    return;
+  }
+
+  // Verificar horario laboral (Lunes a Viernes)
+  if (horaActual > horaApertura && horaActual < horaCierre) {
+    setEstaAbierto("Sí");
+  } else if (horaActual === horaApertura && minutosActuales >= 0) {
+    setEstaAbierto("Sí");
+  } else if (horaActual === horaCierre && minutosActuales < 0) {
+    setEstaAbierto("Sí");
+  } else {
+    setEstaAbierto("No");
+  }
+};
 
   useEffect(() => {
     verificarHorario();
@@ -153,7 +161,8 @@ const SobreNosotros = () => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    id_usuario: userId
+                    id_usuario: userId,
+                    id_resena: idReseña // Añade el ID de la reseña específica
                 }),
             }
         );
@@ -161,17 +170,16 @@ const SobreNosotros = () => {
         const data = await response.json();
 
         if (data.success) {
-            setSuccess(`Reseñas actualizadas: ${data.resenas_actualizadas}`);
+            setSuccess(data.message);
             await cargarReseñas(); // Recargar la lista
         } else {
-            setError(data.message || "Error al actualizar reseñas");
+            setError(data.message || "Error al eliminar la reseña");
         }
     } catch (err) {
         setError("Error de conexión con el servidor");
-        console.error("Error al actualizar reseñas:", err);
+        console.error("Error al eliminar reseña:", err);
     }
 };
-
   // Función para formatear la fecha
   const formatFecha = (fechaString) => {
     const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -377,7 +385,7 @@ const SobreNosotros = () => {
                       />
                     </Form.Group>
                     <div className="text-end">
-                      <Button variant="primary" type="submit" className="px-4">
+                      <Button variant="primary" type="submit" className="px-4" style={{backgroundColor: ' #ff6347'}}>
                         Enviar Reseña
                       </Button>
                     </div>
@@ -403,7 +411,7 @@ const SobreNosotros = () => {
           Explora nuestra colección de cubos Rubik y encuentra el perfecto para
           ti.
         </p>
-        <a href="/catalogo-productos" className="btn btn-primary btn-lg">
+        <a href="/catalogo-productos" className="btn btn-primary btn-lg" style={{backgroundColor: ' #ff7f50'}}>
           Ver Catálogo
         </a>
       </div>

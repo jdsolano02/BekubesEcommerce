@@ -1,44 +1,39 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
-
+header("Access-Control-Allow-Methods: GET");
+header("Access-Control-Allow-Headers: Content-Type");
 
 include 'conexionBD.php';
 
+$idUsuario = $_GET['idUsuario']; 
 
-if (isset($_GET["id"]) && !empty($_GET["id"])) {
-    $id = intval($_GET["id"]); 
+try {
+    $query = "
+    SELECT ID_Usuario, nombre, apellido1, apellido2, email, Rol, FechaCreacion, Telefono, Direccion 
+    FROM usuarios WHERE ID_Usuario = :idUsuario
+    ";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':idUsuario', $idUsuario);
+    $stmt->execute();
+    $usuario = $stmt->fetch(PDO::FETCH_ASSOC); // Usar fetch() para un solo registro
 
-    if ($id > 0) {
-        try {
-           
-            $sql = "SELECT ID_Usuario, nombre, apellido1, apellido2, email, Rol, FechaCreacion FROM usuarios WHERE ID_Usuario = :id";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(":id", $id, PDO::PARAM_INT);
-            $stmt->execute();
-
-            
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($user) {
-              
-                echo json_encode($user);
-            } else {
-                
-                echo json_encode(["error" => "No se encontró el usuario con el ID proporcionado"]);
-            }
-        } catch (PDOException $e) {
-            
-            echo json_encode(["error" => "Error en la base de datos: " . $e->getMessage()]);
-        }
+    if ($usuario) {
+        echo json_encode([
+            "status" => "success",
+            "usuario" => $usuario, // Corregido: devolver "usuario" en lugar de "pedidos"
+        ]);
     } else {
-        
-        echo json_encode(["error" => "ID inválido"]);
+        echo json_encode([
+            "status" => "error",
+            "message" => "Usuario no encontrado.",
+        ]);
     }
-} else {
-   
-    echo json_encode(["error" => "Parámetro 'id' no proporcionado"]);
+} catch (PDOException $e) {
+    echo json_encode([
+        "status" => "error",
+        "message" => "Error al obtener al usuario: " . $e->getMessage(),
+    ]);
 }
-
-$conn = null;
 ?>
+

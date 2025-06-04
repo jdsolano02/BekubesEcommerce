@@ -19,7 +19,7 @@ const EditUser = () => {
 
   
   useEffect(() => {
-    fetch(`http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/getUsuarioById.php?id=${id}`)
+    fetch(`http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/getClienteById.php?id=${id}`)
       .then((response) => response.json())
       .then((data) => setUser(data))
       .catch((error) => {
@@ -144,8 +144,8 @@ const EditUser = () => {
             className="form-control"
             required
           >
-            <option value="admin">Admin</option>
-            <option value="user">User</option>
+            <option value="admin">Administrador</option>
+            <option value="user">Cliente</option>
           </select>
         </div>
         <div className="form-group">

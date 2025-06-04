@@ -42,8 +42,7 @@ const GestionProductos = () => {
       console.log("Respuesta cruda del servidor:", rawData);  // Imprimimos la respuesta
    
       // Intentamos convertirla en JSON
-      const data = JSON.parse(rawData);  // Usamos JSON.parse aquí
-   
+      const data = JSON.parse(rawData);  
       if (data.status === "success") {
         setProductos(data.data);
       } else {
@@ -72,6 +71,7 @@ const convertirImagenABase64 = async (imagen) => {
 };
   const guardarProducto = async (e) => {
     e.preventDefault();
+    e.stopPropagation(); 
 
     try {
       let imagenBase64 = null;
@@ -113,33 +113,41 @@ const convertirImagenABase64 = async (imagen) => {
       }
 
       const data = await response.json();
-      if (data.status === "success") {
-        Swal.fire({
-          icon: "success",
-          title: "Éxito",
-          text: editarId
-            ? "Producto actualizado correctamente."
-            : "Producto agregado correctamente.",
-        });
-        obtenerProductos(); // Actualizar lista
-        setNombre("");
-        setDescripcion("");
-        setPrecio(0);
-        setStock(0);
-        setTipo("");
-        setDificultad("");
-        setImagen(null);
-        setEditarId(null);
-      } else {
-        throw new Error(data.message);
-      }
-    } catch (error) {
+    if (data.status === "success") {
       Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: error.message,
+        icon: "success",
+        title: "Éxito",
+        text: editarId
+          ? "Producto actualizado correctamente."
+          : "Producto agregado correctamente.",
       });
+      
+      // Limpia el formulario antes de actualizar la lista
+      setNombre("");
+      setDescripcion("");
+      setPrecio(0);
+      setStock(0);
+      setTipo("");
+      setDificultad("");
+      setImagen(null);
+      setEditarId(null);
+      
+      // Espera un momento antes de actualizar
+      setTimeout(() => {
+        obtenerProductos();
+      }, 300);
+    } else {
+      throw new Error(data.message);
     }
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: error.message,
+    });
+  } finally {
+    setLoading(false);
+  }
   };
   // Eliminar producto
   const eliminarProducto = async (id) => {
@@ -429,7 +437,7 @@ const convertirImagenABase64 = async (imagen) => {
                       accept="image/*" // Aceptar solo archivos de imagen
                     />
                   </div>
-                  <button type="submit" className="btn btn-primary">
+                  <button type="submit" className="btn btn-primary" style={{backgroundColor:'#ff6347'}}>
                     {editarId ? "Actualizar Producto" : "Agregar Producto"}
                   </button>
                 </form>

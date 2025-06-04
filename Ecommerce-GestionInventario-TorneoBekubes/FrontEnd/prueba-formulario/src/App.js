@@ -22,6 +22,7 @@ import Pagar from "./Pago";
 import Factura from "./Facturas";
 import AdminTorneo from "./AdminTorneo";
 import ClientTorneo from "./ClientTorneo";
+import Perfil from "./Perfil";
 function App() {
   return (
     <Router>
@@ -94,6 +95,14 @@ function App() {
         element={
           <PrivateRoute role="Cliente">
             <ClientTorneo />
+          </PrivateRoute>
+        }
+      />
+                                                             <Route
+        path="/client-perfil"
+        element={
+          <PrivateRoute role="Cliente">
+            <Perfil />
           </PrivateRoute>
         }
       />

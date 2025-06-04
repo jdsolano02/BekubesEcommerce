@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Navbar, Nav, Container, Row, Col, NavDropdown } from "react-bootstrap";
 import { FaFacebook, FaInstagram, FaWhatsapp } from "react-icons/fa";
@@ -8,11 +8,17 @@ import { red } from "@mui/material/colors";
 const ClientHome = () => {
   const navigate = useNavigate();
   const [cantidadCarrito, setCantidadCarrito] = useState(0);
+
+   const handlePerfil = () => {
+    navigate(`/client-perfil`);
+  };
+
   
   const handleLogout = async () => {
     await fetch(
       "http://localhost/Ecommerce-GestionInventario-TorneoBekubes/BackEnd/logout.php"
     );
+    localStorage.removeItem("carrito")
     localStorage.removeItem("user_id");
     localStorage.removeItem("role");
     localStorage.removeItem("email");
@@ -82,6 +88,11 @@ const ClientHome = () => {
                 id="basic-nav-dropdown"
                 align="end"
               >
+                 <NavDropdown.Item
+                  onClick={handlePerfil} style={{color :"green"}}
+                >
+                  Perfil
+                </NavDropdown.Item>
                 <NavDropdown.Item
                   onClick={handleLogout} style={{color :"red"}}
                 >

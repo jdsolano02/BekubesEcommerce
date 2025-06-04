@@ -130,77 +130,132 @@ const Carrito = () => {
     obtenerCarrito();
   }, []);
 
-  return (
-    <div className="container mt-5">
-      <h1 className="text-center mb-4">Carrito de Compras</h1>
+   return (
+    <div className="container mt-4 carrito-container">
+      <div className="card shadow-lg border-0">
+        <div className="card-header bg-primary text-white">
+          <h2 className="text-center mb-0 py-3" style={{color: 'white', fontSize: '3rem'}}>Tu Carrito de Compras</h2>
+        </div>
 
-      {/* Tabla de productos */}
-      <div className="table-responsive">
-        <table className="table table-bordered table-hover">
-          <thead className="thead-dark">
-            <tr>
-              <th>Producto</th>
-              <th>Precio Unitario</th>
-              <th>Cantidad</th>
-              <th>Subtotal</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {carrito.map((item) => (
-              <tr key={item.ID_Producto}>
-                <td>{item.Nombre}</td>
-                <td>${item.Precio.toFixed(2)}</td>
-                <td>
-                  <div className="d-flex justify-content-center">
-                    <button
-                      className="btn btn-sm btn-outline-secondary"
-                      onClick={() => ajustarCantidad(item.ID_Producto, item.Cantidad - 1)}
-                    >
-                      -
-                    </button>
-                    <span className="mx-3">{item.Cantidad}</span>
-                    <button
-                      className="btn btn-sm btn-outline-secondary"
-                      onClick={() => ajustarCantidad(item.ID_Producto, item.Cantidad + 1)}
-                    >
-                      +
-                    </button>
+        <div className="card-body">
+          {carrito.length === 0 ? (
+            <div className="text-center py-5 empty-cart">
+              <h4 className="mt-3">Tu carrito está vacío</h4>
+              <p className="text-muted">Agrega productos para continuar</p>
+              <button
+                className="btn btn-primary mt-3"
+                onClick={() => navigate("/catalogo-productos")}
+                style={{backgroundColor:'#ff7f50'}}
+              >
+                Ir al Catálogo
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="table-responsive">
+                <table className="table table-hover align-middle">
+                  <thead className="table-light">
+                    <tr>
+                      <th className="ps-4">Producto</th>
+                      <th className="text-center">Precio</th>
+                      <th className="text-center">Cantidad</th>
+                      <th className="text-center">Subtotal</th>
+                      <th className="text-end pe-4">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {carrito.map((item) => (
+                      <tr key={item.ID_Producto} className="product-row">
+                        <td className="ps-4">
+                          <div className="d-flex align-items-center">
+                            <div className="product-thumbnail me-3">
+                              {item.Imagen ? (
+                                <img 
+                                  src={`data:image/jpeg;base64,${item.Imagen}`} 
+                                  alt={item.Nombre} 
+                                  className="img-thumbnail"
+                                  style={{width: '60px', height: '60px', objectFit: 'cover'}}
+                                />
+                              ) : (
+                                <div className="thumbnail-placeholder bg-light d-flex align-items-center justify-content-center" style={{width: '60px', height: '60px'}}>
+                                  <span>IMG</span>
+                                </div>
+                              )}
+                            </div>
+                            <span className="fw-medium">{item.Nombre}</span>
+                          </div>
+                        </td>
+                        <td className="text-center">${item.Precio.toFixed(2)}</td>
+                        <td className="text-center">
+                          <div className="quantity-selector d-inline-flex align-items-center border rounded">
+                            <button
+                              className="btn btn-sm px-3 py-1"
+                              onClick={() => ajustarCantidad(item.ID_Producto, item.Cantidad - 1)}
+                            >
+                              -
+                            </button>
+                            <span className="px-3">{item.Cantidad}</span>
+                            <button
+                              className="btn btn-sm px-3 py-1"
+                              onClick={() => ajustarCantidad(item.ID_Producto, item.Cantidad + 1)}
+                            >
+                              +
+                            </button>
+                          </div>
+                        </td>
+                        <td className="text-center fw-bold">${(item.Precio * item.Cantidad).toFixed(2)}</td>
+                        <td className="text-end pe-4">
+                          <button
+                            className="btn btn-outline-danger btn-sm"
+                            onClick={() => eliminarProducto(item.ID_Producto)}
+                            title="Eliminar"
+                          >
+                            Eliminar
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="row mt-4">
+                <div className="col-md-5 ms-auto">
+                  <div className="card border-0 shadow-sm">
+                    <div className="card-body">
+                      <h5 className="card-title border-bottom pb-3">Resumen de Compra</h5>
+                      <div className="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <span>${total.toFixed(2)}</span>
+                      </div>
+                      <div className="d-flex justify-content-between fw-bold fs-5 border-top pt-3">
+                        <span>Total:</span>
+                        <span className="text-primary">${total.toFixed(2)}</span>
+                      </div>
+                      
+                      <div className="d-grid gap-2 mt-4">
+                        <button 
+                          className="btn btn-primary btn-lg"
+                          onClick={finalizarCompra}
+                          id="btnFinalizarCompra"
+                          disabled={carrito.length === 0}
+                          style={{backgroundColor: '#ff6347'}}
+                        >
+                          Finalizar Compra
+                        </button>
+                        <button
+                          className="btn btn-outline-secondary"
+                          onClick={() => navigate("/catalogo-productos")}
+                        >
+                          Seguir Comprando
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </td>
-                <td>${(item.Precio * item.Cantidad).toFixed(2)}</td>
-                <td>
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => eliminarProducto(item.ID_Producto)}
-                  >
-                    Eliminar
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Resumen del carrito */}
-      <div className="text-end mt-4">
-        <h4>Total: ${total.toFixed(2)}</h4>
-        <div className="d-flex justify-content-end gap-2">
-          <button
-            className="btn btn-secondary"
-            onClick={() => navigate("/catalogo-productos")}
-          >
-            Volver
-          </button>
-          <button 
-            className="btn btn-success" 
-            onClick={finalizarCompra}
-            id="btnFinalizarCompra"
-            disabled={carrito.length === 0}
-          >
-            Finalizar Compra
-          </button>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

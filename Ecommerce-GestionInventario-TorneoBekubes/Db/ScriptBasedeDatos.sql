@@ -17,7 +17,9 @@ CREATE TABLE Usuarios (
     reset_token VARCHAR(255),
     token_expiration DATETIME,
     -- Estado de la cuenta (activo/inactivo)
-    Estado BOOLEAN DEFAULT FALSE
+    Estado BOOLEAN DEFAULT FALSE,
+    Telefono VARCHAR(10),
+    Direccion VARCHAR(200)
 );
 CREATE TABLE Historial_Usuarios (
     ID_HistorialU INT PRIMARY KEY AUTO_INCREMENT,

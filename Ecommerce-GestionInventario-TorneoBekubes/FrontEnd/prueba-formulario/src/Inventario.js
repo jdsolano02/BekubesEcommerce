@@ -234,6 +234,7 @@ const Inventario = () => {
               <button
                 className="btn btn-primary btn-sm"
                 onClick={() => actualizarStock(item.ID_Inventario, item.Stock)}
+                style={{backgroundColor: '#ff6347'}}
               >
                 Actualizar
               </button>

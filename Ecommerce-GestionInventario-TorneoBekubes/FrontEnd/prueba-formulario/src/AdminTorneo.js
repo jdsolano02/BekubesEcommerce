@@ -243,7 +243,7 @@ const AdminTorneo = () => {
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h2>Administración de Torneos</h2>
           <div>
-            <Button variant="primary" onClick={handleNewTorneo} className="me-2">
+            <Button variant="primary" onClick={handleNewTorneo} className="me-2" style={{backgroundColor: '#ff6347'}}>
               Nuevo Torneo
             </Button>
           </div>

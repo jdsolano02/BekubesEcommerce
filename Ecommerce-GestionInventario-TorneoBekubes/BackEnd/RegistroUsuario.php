@@ -21,9 +21,11 @@ $apellido1 = $data['apellido1'] ?? '';
 $apellido2 = $data['apellido2'] ?? '';
 $email = $data['email'] ?? '';
 $password = $data['password'] ?? '';
-$rol = 'Cliente'; // Rol por defecto
+$rol = 'Cliente'; 
+$telefono = $data['telefono'] ?? '';
+$direccion = $data['direccion'] ?? '';
 
-if (empty($nombre) || empty($apellido1) || empty($email) || empty($password)) {
+if (empty($nombre) || empty($apellido1) || empty($email) || empty($password) || empty($direccion)) {
     echo json_encode(["status" => "error", "message" => "Todos los campos obligatorios deben completarse."]);
     exit;
 }
@@ -46,8 +48,8 @@ $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 $token = bin2hex(random_bytes(16)); // Genera un token único
 $fechaLimite = date('Y-m-d H:i:s', strtotime('+24 hours')); // 24 horas para validar
 
-$query = "INSERT INTO Usuarios (Nombre, Apellido1, Apellido2, Email, Password, Rol, TokenVerificacion, FechaLimiteVerificacion) 
-          VALUES (:nombre, :apellido1, :apellido2, :email, :password, :rol, :token, :fechaLimite)";
+$query = "INSERT INTO Usuarios (Nombre, Apellido1, Apellido2, Email, Password, Rol, TokenVerificacion, FechaLimiteVerificacion, Telefono, Direccion) 
+          VALUES (:nombre, :apellido1, :apellido2, :email, :password, :rol, :token, :fechaLimite, :telefono, :direccion)";
 $stmt = $conn->prepare($query);
 
 $stmt->bindParam(':nombre', $nombre);
@@ -58,6 +60,8 @@ $stmt->bindParam(':password', $hashedPassword);
 $stmt->bindParam(':rol', $rol);
 $stmt->bindParam(':token', $token);
 $stmt->bindParam(':fechaLimite', $fechaLimite);
+$stmt->bindParam(':telefono', $telefono);
+$stmt->bindParam(':direccion', $direccion);
 
 if ($stmt->execute()) {
     // Obtener ID del usuario recién registrado

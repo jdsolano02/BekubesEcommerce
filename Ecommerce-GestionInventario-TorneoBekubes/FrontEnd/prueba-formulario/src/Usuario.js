@@ -190,7 +190,7 @@ const Usuarios = () => {
             {/* Contenedor responsive para la tabla */}
             <div className="table-responsive">
             <table className="table table-striped table-bordered">
-              <thead>
+              <thead className="table-dark">
                 <tr>
                   <th>ID</th>
                   <th>Nombre</th>
@@ -199,6 +199,8 @@ const Usuarios = () => {
                   <th>Email</th>
                   <th>Rol</th>
                   <th>Fecha de Creación</th>
+                  <th>Teléfono</th>
+                  <th>Dirección</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -208,10 +210,12 @@ const Usuarios = () => {
                     <td>{user.ID_Usuario}</td>
                     <td>{user.nombre}</td>
                     <td>{user.apellido1}</td>
-                    <td>{user.apellido2}</td>
+                    <td>{user.apellido2 || "-"}</td>
                     <td>{user.email}</td>
                     <td>{user.Rol}</td>
                     <td>{user.FechaCreacion}</td>
+                     <td className="text-nowrap">{user.Telefono || "-"}</td>
+                    <td>{user.Direccion || "-"}</td>
                     <td>
                       <button
                         className="btn btn-warning me-2"
@@ -238,6 +242,7 @@ const Usuarios = () => {
             <button
               className="btn btn-volver"
               onClick={() => navigate("/admin-home")}
+              style={{backgroundColor: '#1a1a1a'}}
             >
               Volver
             </button>

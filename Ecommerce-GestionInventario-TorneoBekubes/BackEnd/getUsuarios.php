@@ -7,7 +7,7 @@ include 'conexionBD.php';
 
 try {
 
-    $sql = "SELECT ID_Usuario, nombre, apellido1, apellido2, email, Rol, FechaCreacion, estado FROM Usuarios";
+    $sql = "SELECT ID_Usuario, nombre, apellido1, apellido2, email, Rol, FechaCreacion, estado, Telefono, Direccion FROM Usuarios";
     $result = $conn->query($sql);
     $usuarios = [];
     if ($result->rowCount() > 0) { 

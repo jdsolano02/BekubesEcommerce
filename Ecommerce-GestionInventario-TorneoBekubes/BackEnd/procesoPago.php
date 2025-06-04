@@ -74,7 +74,7 @@ try {
     }
 
     // Obtener el nombre del cliente desde la base de datos
-    $queryCliente = "SELECT u.Nombre 
+    $queryCliente = "SELECT u.Nombre, u.Telefono, u.Direccion
                     FROM Pedidos p
                     JOIN Usuarios u ON p.ID_Usuario = u.ID_Usuario
                     WHERE p.ID_Pedido = :ID_Pedido";
@@ -88,6 +88,8 @@ try {
     }
 
     $nombreCliente = $cliente['Nombre'];
+    $nombreTelefono = $cliente['Telefono'];
+    $nombreDireccion = $cliente['Direccion'];
 
     // Registrar el pago en la tabla Pagos
     $query = "INSERT INTO Pagos (Monto_Total, Estado, ID_Pedido) VALUES (:Monto_Total, :Estado, :ID_Pedido)";
@@ -203,6 +205,10 @@ try {
     $pdf->Cell(0, 8, utf8_decode($nombreCliente), 0, 1);
     $pdf->Cell(45, 8, 'Email:', 0, 0);
     $pdf->Cell(0, 8, $payerEmail, 0, 1);
+    $pdf->Cell(45, 8, utf8_decode('Teléfono:'), 0, 0);
+    $pdf->Cell(0, 8, utf8_decode($nombreTelefono), 0, 1);
+    $pdf->Cell(45, 8, utf8_decode('Dirección:'), 0, 0);
+    $pdf->Cell(0, 8, utf8_decode($nombreDireccion), 0, 1);
     $pdf->Ln(12);
 
     // Tabla de productos con bordes y encabezado resaltado

@@ -1,0 +1,48 @@
+.perfil-background {
+  min-height: 100vh;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-up {
+  animation: fadeUp 0.5s ease-out;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+}
+
+.info-item {
+  display: flex;
+  align-items: start;
+  margin-bottom: 1rem;
+}
+
+.info-item .icon {
+  font-size: 20px;
+  margin-right: 10px;
+  color: #ff6347;
+}
+.bg-primary2 {
+  background-image: url('https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3JoYm9ncjRhdHA1N2hma3RzMm8zZTRvdDVheHhqY2lqaTYxcXhqNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/phmojyyfS3GbZ1juxd/giphy.gif');
+}
+
+
