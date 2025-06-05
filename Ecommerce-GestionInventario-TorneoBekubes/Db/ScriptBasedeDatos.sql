@@ -112,3 +112,22 @@ CREATE TABLE Inventario (
     FechaModificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	FOREIGN KEY (ID_Producto) REFERENCES Productos(ID_Producto)
 );
+--- Agregar al Administrador ---
+INSERT INTO Usuarios (
+    Nombre, 
+    Apellido1, 
+    Apellido2, 
+    Email, 
+    Password, 
+    Rol, 
+    Verificado
+) VALUES (
+    'Administrador', 
+    'Gómez', 
+    'Sánchez', 
+    'admin@empresa.com', 
+    '$2a$12$6XHCP5yNqkq6ZuOmUF6.QOr4/6B7kf1WYr/nHmFSR.oK.Ot4Es0HG', -- Hash de "Admin123!"
+    'Administrador', 
+    1
+);
+
