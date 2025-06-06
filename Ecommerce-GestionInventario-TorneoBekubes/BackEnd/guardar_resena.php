@@ -31,8 +31,8 @@ try {
         throw new Exception("Error de conexión a la base de datos");
     }
 
-    $query = "INSERT INTO Reseñas (ID_Producto, Comentario, Valoracion, Fecha, ID_Usuario, Estado, likes) 
-              VALUES (NULL, :comentario, :valoracion, NOW(), :id_usuario, 1, 0)";
+    $query = "INSERT INTO Reseñas (Comentario, Valoracion, Fecha, ID_Usuario, Estado, likes) 
+              VALUES (:comentario, :valoracion, NOW(), :id_usuario, 1, 0)";
     
     $stmt = $conn->prepare($query); // Cambiado de $pdo a $conn
     $stmt->bindParam(':comentario', $data['comentario'], PDO::PARAM_STR);

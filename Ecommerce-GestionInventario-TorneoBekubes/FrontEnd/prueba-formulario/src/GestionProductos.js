@@ -470,7 +470,7 @@ const convertirImagenABase64 = async (imagen) => {
                           {producto.Descripcion}
                         </p>
                         <div className="d-flex justify-content-between">
-                          <span>${producto.Precio.toFixed(2)}</span>
+                          <span>${Number(producto.Precio).toFixed(2)}</span>
                           <span>Stock: {producto.Stock}</span>
                         </div>
                         <div className="d-flex justify-content-between mt-2">
@@ -552,7 +552,7 @@ const convertirImagenABase64 = async (imagen) => {
                         >
                           {producto.Descripcion}
                         </td>
-                        <td>${producto.Precio.toFixed(2)}</td>
+                        <td>${Number(producto.Precio).toFixed(2)}</td>
                         <td>{producto.Stock}</td>
                         <td>
                           {producto.Imagen && (
