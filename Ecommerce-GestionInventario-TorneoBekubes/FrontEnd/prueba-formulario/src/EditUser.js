@@ -144,8 +144,8 @@ const EditUser = () => {
             className="form-control"
             required
           >
-            <option value="admin">Administrador</option>
-            <option value="user">Cliente</option>
+            <option value="Administrador">Administrador</option>
+            <option value="Cliente">Cliente</option>
           </select>
         </div>
         <div className="form-group">

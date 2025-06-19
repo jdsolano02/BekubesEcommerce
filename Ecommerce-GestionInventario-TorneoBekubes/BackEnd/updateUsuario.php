@@ -16,11 +16,9 @@ if (isset($data["ID_Usuario"]) && !empty($data["ID_Usuario"])) {
     $apellido2 = $data["apellido2"];
     $email = $data["email"];
     $Rol = $data["Rol"];
-    $telefono = $data["telefono"];
-    $direccion = $data["direccion"];
 
     try {
-        $sql = "UPDATE usuarios SET nombre = :nombre, apellido1 = :apellido1, apellido2 = :apellido2, email = :email, Rol = :Rol, telefono = :telefono, direccion= :direccion WHERE ID_Usuario = :id";
+        $sql = "UPDATE usuarios SET nombre = :nombre, apellido1 = :apellido1, apellido2 = :apellido2, email = :email, Rol = :Rol WHERE ID_Usuario = :id";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(":nombre", $nombre);
         $stmt->bindParam(":apellido1", $apellido1);
@@ -28,8 +26,6 @@ if (isset($data["ID_Usuario"]) && !empty($data["ID_Usuario"])) {
         $stmt->bindParam(":email", $email);
         $stmt->bindParam(":Rol", $Rol);
         $stmt->bindParam(":id", $id);
-        $stmt->bindParam(":telefono", $telefono);
-        $stmt->bindParam(":direccion", $direccion);
 
         if ($stmt->execute()) {
             if ($stmt->rowCount() > 0) {
